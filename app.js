@@ -1,19 +1,19 @@
-
+```javascript
 // ============================================================
-// DIGITAL PRODUCT HUB - COMPLETE APP.JS
+// DIGITAL PRODUCT HUB - APP.JS
 // ============================================================
 
 const API_BASE = "/api/v1/products";
 
+
 // ============================================================
-// FALLBACK PRODUCTS
-// These products will show when backend is unavailable.
+// DEFAULT PRODUCTS
 // ============================================================
 
-const fallbackProducts = [
+const defaultProducts = [
 
     {
-        _id: "sample-react-course",
+        _id: "react-course",
         title: "React Mastery Course",
         category: "Course",
         description: "Complete React learning material with projects and notes.",
@@ -23,7 +23,7 @@ const fallbackProducts = [
     },
 
     {
-        _id: "sample-ui-kit",
+        _id: "premium-ui-kit",
         title: "Premium UI Kit",
         category: "UI Kit",
         description: "Professional Figma UI Kit with 300+ components.",
@@ -33,18 +33,18 @@ const fallbackProducts = [
     },
 
     {
-        _id: "sample-ebook",
+        _id: "javascript-guide",
         title: "JavaScript Master Guide",
         category: "E-book",
-        description: "Learn modern JavaScript from beginner to advanced.",
+        description: "Learn modern JavaScript from beginner to advanced with practical examples.",
         price: 199,
         image: "images/ebook.png",
         pricing: "one-time"
     },
 
     {
-        _id: "sample-source-code",
-        title: "E-commerce Website Source Code",
+        _id: "ecommerce-source-code",
+        title: "E-commerce Website",
         category: "Source Code",
         description: "Complete responsive shopping website source code with HTML, CSS and JavaScript.",
         price: 299,
@@ -53,236 +53,29 @@ const fallbackProducts = [
     },
 
     {
-        _id: "sample-react-native",
+        _id: "react-native-starter",
         title: "React Native Starter Pack",
         category: "React Native",
         description: "Complete starter resources for building React Native mobile applications.",
         price: 399,
-        image: "images/React%20Native%20Starter%20Pack.png",
+        image: "images/React Native Starter Pack.png",
         pricing: "one-time"
     },
 
     {
-        _id: "sample-figma-dashboard",
+        _id: "figma-dashboard",
         title: "Figma Dashboard Template",
         category: "Figma Template",
         description: "Modern professional dashboard UI template designed in Figma.",
         price: 299,
-        image: "images/Figma%20Dashboard%20Template.png",
+        image: "images/Figma Dashboard Template.png",
         pricing: "one-time"
     }
 
 ];
 
 
-// ============================================================
-// PRODUCTS ARRAY
-// ============================================================
-
-let products = [...fallbackProducts];
-
-
-// ============================================================
-// IMAGE HELPER
-// ============================================================
-
-function getImage(image, title = "") {
-
-    if (!image || typeof image !== "string" || image.trim() === "") {
-
-        return "/images/default-product.png";
-
-    }
-
-    const trimmed = image.trim();
-
-    // External image
-    if (/^https?:\/\//i.test(trimmed)) {
-
-        return trimmed;
-
-    }
-
-    // Already absolute
-    if (trimmed.startsWith("/")) {
-
-        return trimmed;
-
-    }
-
-    // Images folder path
-    if (trimmed.startsWith("images/")) {
-
-        return `/${trimmed}`;
-
-    }
-
-    const fileName = trimmed
-        .split(/[\\/]/)
-        .pop()
-        .toLowerCase();
-
-
-    // ========================================================
-    // DIRECT IMAGE MAP
-    // ========================================================
-
-    const directImageMap = {
-
-        "react.png":
-            "/images/react.png",
-
-        "uikit.png":
-            "/images/uikit.png",
-
-        "ebook.png":
-            "/images/ebook.png",
-
-        "sourcecode.png":
-            "/images/sourcecode.png",
-
-        "default-product.png":
-            "/images/default-product.png",
-
-        "premium ui kit.png":
-            "/images/uikit.png",
-
-        "figma dashboard template.png":
-            "/images/Figma%20Dashboard%20Template.png",
-
-        "react native starter pack.png":
-            "/images/React%20Native%20Starter%20Pack.png"
-
-    };
-
-
-    if (directImageMap[fileName]) {
-
-        return directImageMap[fileName];
-
-    }
-
-
-    // ========================================================
-    // TITLE-BASED IMAGE MATCHING
-    // ========================================================
-
-    const text = `${trimmed} ${title}`.toLowerCase();
-
-
-    if (
-        text.includes("figma") &&
-        text.includes("dashboard")
-    ) {
-
-        return "/images/Figma%20Dashboard%20Template.png";
-
-    }
-
-
-    if (
-        text.includes("react native") ||
-        text.includes("react-native")
-    ) {
-
-        return "/images/React%20Native%20Starter%20Pack.png";
-
-    }
-
-
-    if (
-        text.includes("premium ui") ||
-        text.includes("ui kit")
-    ) {
-
-        return "/images/uikit.png";
-
-    }
-
-
-    if (text.includes("ebook") || text.includes("book")) {
-
-        return "/images/ebook.png";
-
-    }
-
-
-    if (
-        text.includes("source") ||
-        text.includes("code")
-    ) {
-
-        return "/images/sourcecode.png";
-
-    }
-
-
-    if (text.includes("react")) {
-
-        return "/images/react.png";
-
-    }
-
-
-    return `/images/${encodeURIComponent(trimmed)}`;
-
-}
-
-
-// ============================================================
-// WISHLIST
-// ============================================================
-
-const getWishlist = () => {
-
-    try {
-
-        return JSON.parse(
-            localStorage.getItem("wishlist")
-        ) || [];
-
-    } catch (error) {
-
-        return [];
-
-    }
-
-};
-
-
-const saveWishlist = (list) => {
-
-    localStorage.setItem(
-        "wishlist",
-        JSON.stringify(list)
-    );
-
-};
-
-
-const toggleWishlistById = (id) => {
-
-    const list = getWishlist();
-
-    const index = list.indexOf(id);
-
-
-    if (index === -1) {
-
-        list.push(id);
-
-    } else {
-
-        list.splice(index, 1);
-
-    }
-
-
-    saveWishlist(list);
-
-    return list.includes(id);
-
-};
+let products = [...defaultProducts];
 
 
 // ============================================================
@@ -292,486 +85,137 @@ const toggleWishlistById = (id) => {
 const productGrid =
     document.getElementById("product-grid");
 
-const year =
-    document.getElementById("year");
-
-const listingForm =
-    document.getElementById("listing-form");
-
-const formMessage =
-    document.getElementById("form-message");
-
-const assetFile =
-    document.getElementById("asset-file");
-
-const uploadStatus =
-    document.getElementById("upload-status");
-
-const reviewButton =
-    document.getElementById("review-btn");
-
-const reviewPanel =
-    document.getElementById("review-panel");
-
-const reviewContent =
-    document.getElementById("review-content");
-
 const cartCount =
     document.getElementById("cart-count");
 
 const fetchError =
     document.getElementById("fetch-error");
 
+const year =
+    document.getElementById("year");
+
 
 // ============================================================
-// RENDER PRODUCTS
+// IMAGE FUNCTION
 // ============================================================
 
-const renderProducts = () => {
+function getImage(image, title = "") {
 
-    if (!productGrid) {
+    if (!image) {
 
-        return;
+        return "/images/default-product.png";
 
     }
 
 
-    if (!products.length) {
+    if (image.startsWith("http")) {
 
-        productGrid.innerHTML = `
-
-            <article class="product-card empty-state">
-
-                <h3>No products available</h3>
-
-                <p>
-                    Add products from seller dashboard.
-                </p>
-
-            </article>
-
-        `;
-
-        return;
+        return image;
 
     }
 
 
-    const wishlist = getWishlist();
+    let fileName =
+        image
+            .split("/")
+            .pop()
+            .toLowerCase();
 
 
-    productGrid.innerHTML = products.map((product) => {
+    if (fileName === "react.png") {
 
-        const favorited =
-            wishlist.includes(product._id);
-
-
-        const image =
-            getImage(
-                product.image,
-                product.title
-            );
-
-
-        return `
-
-            <article class="product-card">
-
-                <img
-                    src="${image}"
-                    class="product-image"
-                    alt="${product.title}"
-                    loading="lazy"
-                    onerror="
-                        this.onerror=null;
-                        this.src='/images/default-product.png';
-                    "
-                >
-
-
-                <div class="product-card-header">
-
-                    <span class="tag">
-                        ${product.category || "Digital Product"}
-                    </span>
-
-                    <button
-                        class="delete-btn"
-                        data-id="${product._id}"
-                        type="button">
-
-                        Delete
-
-                    </button>
-
-                </div>
-
-
-                <h3>
-                    ${product.title}
-                </h3>
-
-
-                <p>
-                    ${product.description || ""}
-                </p>
-
-
-                <div class="rating">
-                    ⭐⭐⭐⭐⭐
-                </div>
-
-
-                <div class="product-meta">
-
-                    <span>
-                        ${
-                            product.pricing === "subscription"
-                                ? "Subscription"
-                                : "Instant Download"
-                        }
-                    </span>
-
-                    <strong>
-                        ₹${product.price}
-                    </strong>
-
-                </div>
-
-
-                <div class="product-buttons">
-
-
-                    <button
-                        class="cart-btn"
-                        data-id="${product._id}"
-                        type="button">
-
-                        Add to Cart
-
-                    </button>
-
-
-                    <button
-                        class="buy-btn"
-                        data-id="${product._id}"
-                        type="button">
-
-                        Buy Now
-
-                    </button>
-
-
-                    <button
-                        class="wishlist-btn"
-                        data-id="${product._id}"
-                        aria-label="Add to wishlist"
-                        type="button">
-
-                        <i class="${
-                            favorited
-                                ? "fa-solid fa-heart"
-                                : "fa-regular fa-heart"
-                        }"></i>
-
-                    </button>
-
-
-                </div>
-
-
-            </article>
-
-        `;
-
-    }).join("");
-
-};
-
-
-// ============================================================
-// FETCH PRODUCTS
-// ============================================================
-
-const fetchProducts = async () => {
-
-    try {
-
-        if (fetchError) {
-
-            fetchError.textContent =
-                "Loading products...";
-
-        }
-
-
-        const response =
-            await fetch(API_BASE);
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Failed to fetch products"
-            );
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        const apiProducts =
-            Array.isArray(data.products)
-                ? data.products
-                : [];
-
-
-        // ====================================================
-        // IMPORTANT:
-        // Always keep the six default products.
-        // Add backend products without duplicating them.
-        // ====================================================
-
-        const backendProducts =
-            apiProducts.filter((apiProduct) => {
-
-                return !fallbackProducts.some(
-                    (fallbackProduct) =>
-                        fallbackProduct.title.toLowerCase() ===
-                        String(apiProduct.title || "").toLowerCase()
-                );
-
-            });
-
-
-        products = [
-            ...fallbackProducts,
-            ...backendProducts
-        ];
-
-
-        renderProducts();
-
-
-        if (fetchError) {
-
-            fetchError.textContent = "";
-
-        }
-
-    } catch (error) {
-
-        console.error(
-            "Product fetch error:",
-            error
-        );
-
-
-        // Backend unavailable:
-        // show all six fallback products.
-
-        products = [...fallbackProducts];
-
-
-        renderProducts();
-
-
-        if (fetchError) {
-
-            fetchError.textContent =
-                "Showing all available products while the backend is unavailable.";
-
-        }
-
-
-        if (formMessage) {
-
-            formMessage.textContent =
-                "Could not load products from backend.";
-
-        }
-
-    }
-
-};
-
-
-// ============================================================
-// CREATE PRODUCT
-// ============================================================
-
-const createProduct = async (payload) => {
-
-    const response =
-        await fetch(API_BASE, {
-
-            method: "POST",
-
-            headers: {
-                "Content-Type": "application/json"
-            },
-
-            body: JSON.stringify(payload)
-
-        });
-
-
-    if (!response.ok) {
-
-        throw new Error(
-            "Create failed"
-        );
+        return "/images/react.png";
 
     }
 
 
-    const result =
-        await response.json();
+    if (fileName === "uikit.png") {
 
-
-    const newProduct =
-        result.product || result;
-
-
-    products.unshift(newProduct);
-
-
-    renderProducts();
-
-
-    return newProduct;
-
-};
-
-
-// ============================================================
-// DELETE PRODUCT
-// ============================================================
-
-const deleteProduct = async (id) => {
-
-    // Don't delete fallback products from backend
-    // because they are only frontend sample products.
-
-    const isFallback =
-        fallbackProducts.some(
-            product => product._id === id
-        );
-
-
-    if (isFallback) {
-
-        alert(
-            "This sample product cannot be deleted from the backend."
-        );
-
-        return;
+        return "/images/uikit.png";
 
     }
 
 
-    try {
+    if (fileName === "ebook.png") {
 
-        const response =
-            await fetch(
-                `${API_BASE}/${id}`,
-                {
-                    method: "DELETE"
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Delete failed"
-            );
-
-        }
-
-
-        products =
-            products.filter(
-                product => product._id !== id
-            );
-
-
-        renderProducts();
-
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert(
-            "Unable to delete product."
-        );
+        return "/images/ebook.png";
 
     }
 
-};
+
+    if (fileName === "sourcecode.png") {
+
+        return "/images/sourcecode.png";
+
+    }
+
+
+    if (
+        fileName.includes("react native") ||
+        title.toLowerCase().includes("react native")
+    ) {
+
+        return "/images/React%20Native%20Starter%20Pack.png";
+
+    }
+
+
+    if (
+        fileName.includes("figma dashboard") ||
+        title.toLowerCase().includes("figma dashboard")
+    ) {
+
+        return "/images/Figma%20Dashboard%20Template.png";
+
+    }
+
+
+    return image.startsWith("/")
+        ? image
+        : "/" + image;
+
+}
 
 
 // ============================================================
 // CART
 // ============================================================
 
-const addToCart = (product) => {
+function getCart() {
 
-    let cart =
-        JSON.parse(
+    try {
+
+        return JSON.parse(
             localStorage.getItem("cart")
         ) || [];
 
+    } catch (error) {
 
-    const exists =
-        cart.find(
-            item => item._id === product._id
-        );
-
-
-    if (exists) {
-
-        alert(
-            "Product already added to cart."
-        );
-
-        return;
+        return [];
 
     }
 
+}
 
-    cart.push(product);
 
+function saveCart(cart) {
 
     localStorage.setItem(
         "cart",
         JSON.stringify(cart)
     );
 
-
-    updateCartCount();
-
-
-    alert(
-        "Product added to cart."
-    );
-
-};
+}
 
 
 // ============================================================
 // UPDATE CART COUNT
 // ============================================================
 
-const updateCartCount = () => {
+function updateCartCount() {
 
     const cart =
-        JSON.parse(
-            localStorage.getItem("cart")
-        ) || [];
+        getCart();
 
 
     if (cartCount) {
@@ -781,58 +225,320 @@ const updateCartCount = () => {
 
     }
 
-};
+}
 
 
 // ============================================================
-// PRODUCT BUTTON EVENTS
+// ADD TO CART
+// ============================================================
+
+function addToCart(product) {
+
+    if (!product) {
+
+        return;
+
+    }
+
+
+    const cart =
+        getCart();
+
+
+    const existing =
+        cart.find(
+            item =>
+                String(item._id) ===
+                String(product._id)
+        );
+
+
+    if (existing) {
+
+        alert(
+            "This product is already in your cart."
+        );
+
+        return;
+
+    }
+
+
+    cart.push({
+
+        _id: product._id,
+
+        title: product.title,
+
+        category: product.category,
+
+        description: product.description,
+
+        price: Number(product.price) || 0,
+
+        image: product.image,
+
+        pricing: product.pricing || "one-time"
+
+    });
+
+
+    saveCart(cart);
+
+    updateCartCount();
+
+
+    alert(
+        `${product.title} added to cart!`
+    );
+
+}
+
+
+// ============================================================
+// BUY NOW
+// ============================================================
+
+function buyNow(product) {
+
+    if (!product) {
+
+        return;
+
+    }
+
+
+    // Save selected product
+
+    localStorage.setItem(
+        "selectedProduct",
+        JSON.stringify(product)
+    );
+
+
+    // Also add it to cart
+
+    const cart =
+        getCart();
+
+
+    const exists =
+        cart.find(
+            item =>
+                String(item._id) ===
+                String(product._id)
+        );
+
+
+    if (!exists) {
+
+        cart.push({
+
+            _id: product._id,
+
+            title: product.title,
+
+            category: product.category,
+
+            description: product.description,
+
+            price: Number(product.price) || 0,
+
+            image: product.image,
+
+            pricing: product.pricing || "one-time"
+
+        });
+
+
+        saveCart(cart);
+
+    }
+
+
+    updateCartCount();
+
+
+    // Go to cart
+
+    window.location.href =
+        "cart.html";
+
+}
+
+
+// ============================================================
+// RENDER PRODUCTS
+// ============================================================
+
+function renderProducts() {
+
+    if (!productGrid) {
+
+        return;
+
+    }
+
+
+    productGrid.innerHTML =
+        products.map(product => {
+
+            const image =
+                getImage(
+                    product.image,
+                    product.title
+                );
+
+
+            return `
+
+                <article class="product-card">
+
+
+                    <img
+
+                        src="${image}"
+
+                        class="product-image"
+
+                        alt="${product.title}"
+
+                        loading="lazy"
+
+                        onerror="
+                            this.onerror=null;
+                            this.src='/images/default-product.png';
+                        "
+
+                    >
+
+
+                    <div class="product-details">
+
+
+                        <span class="tag">
+
+                            ${product.category || "Digital Product"}
+
+                        </span>
+
+
+                        <h3>
+
+                            ${product.title}
+
+                        </h3>
+
+
+                        <p>
+
+                            ${product.description || ""}
+
+                        </p>
+
+
+                        <div class="product-meta">
+
+                            <span>
+
+                                ${
+                                    product.pricing === "subscription"
+                                        ? "Subscription"
+                                        : "Instant Download"
+                                }
+
+                            </span>
+
+
+                            <strong>
+
+                                ₹${product.price}
+
+                            </strong>
+
+                        </div>
+
+
+                        <div class="buttons">
+
+
+                            <button
+
+                                class="buy-btn"
+
+                                type="button"
+
+                                data-id="${product._id}"
+
+                            >
+
+                                Buy Now
+
+                            </button>
+
+
+                            <button
+
+                                class="cart-btn"
+
+                                type="button"
+
+                                data-id="${product._id}"
+
+                            >
+
+                                Add to Cart
+
+                            </button>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </article>
+
+            `;
+
+        }).join("");
+
+}
+
+
+// ============================================================
+// BUTTON EVENTS
 // ============================================================
 
 if (productGrid) {
 
     productGrid.addEventListener(
         "click",
-        (event) => {
+        function (event) {
 
 
-            // =================================================
-            // DELETE
-            // =================================================
+            // ==================================================
+            // ADD TO CART
+            // ==================================================
 
-            const deleteBtn =
-                event.target.closest(
-                    ".delete-btn"
-                );
-
-
-            if (deleteBtn) {
-
-                deleteProduct(
-                    deleteBtn.dataset.id
-                );
-
-                return;
-
-            }
-
-
-            // =================================================
-            // CART
-            // =================================================
-
-            const cartBtn =
+            const cartButton =
                 event.target.closest(
                     ".cart-btn"
                 );
 
 
-            if (cartBtn) {
+            if (cartButton) {
+
+                const id =
+                    cartButton.dataset.id;
+
 
                 const product =
                     products.find(
                         item =>
-                            item._id ===
-                            cartBtn.dataset.id
+                            String(item._id) ===
+                            String(id)
                     );
 
 
@@ -847,36 +553,33 @@ if (productGrid) {
             }
 
 
-            // =================================================
+            // ==================================================
             // BUY NOW
-            // =================================================
+            // ==================================================
 
-            const buyBtn =
+            const buyButton =
                 event.target.closest(
                     ".buy-btn"
                 );
 
 
-            if (buyBtn) {
+            if (buyButton) {
+
+                const id =
+                    buyButton.dataset.id;
+
 
                 const product =
                     products.find(
                         item =>
-                            item._id ===
-                            buyBtn.dataset.id
+                            String(item._id) ===
+                            String(id)
                     );
 
 
                 if (product) {
 
-                    localStorage.setItem(
-                        "selectedProduct",
-                        JSON.stringify(product)
-                    );
-
-
-                    window.location.href =
-                        "product-details.html";
+                    buyNow(product);
 
                 }
 
@@ -884,53 +587,102 @@ if (productGrid) {
 
             }
 
-
-            // =================================================
-            // WISHLIST
-            // =================================================
-
-            const wishlistBtn =
-                event.target.closest(
-                    ".wishlist-btn"
-                );
-
-
-            if (wishlistBtn) {
-
-                const id =
-                    wishlistBtn.dataset.id;
-
-
-                if (!id) {
-
-                    return;
-
-                }
-
-
-                const nowFavorited =
-                    toggleWishlistById(id);
-
-
-                const icon =
-                    wishlistBtn.querySelector(
-                        "i"
-                    );
-
-
-                if (icon) {
-
-                    icon.className =
-                        nowFavorited
-                            ? "fa-solid fa-heart"
-                            : "fa-regular fa-heart";
-
-                }
-
-            }
-
         }
     );
+
+}
+
+
+// ============================================================
+// FETCH PRODUCTS FROM BACKEND
+// ============================================================
+
+async function fetchProducts() {
+
+    try {
+
+        const response =
+            await fetch(API_BASE);
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Backend unavailable"
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const backendProducts =
+            Array.isArray(data.products)
+                ? data.products
+                : [];
+
+
+        // Keep default six products
+        // and add backend products.
+
+        const additionalProducts =
+            backendProducts.filter(
+                backendProduct => {
+
+                    return !defaultProducts.some(
+                        defaultProduct =>
+                            defaultProduct.title.toLowerCase() ===
+                            String(
+                                backendProduct.title || ""
+                            ).toLowerCase()
+                    );
+
+                }
+            );
+
+
+        products = [
+
+            ...defaultProducts,
+
+            ...additionalProducts
+
+        ];
+
+
+        renderProducts();
+
+
+        if (fetchError) {
+
+            fetchError.textContent = "";
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Backend unavailable. Showing default products."
+        );
+
+
+        products =
+            [...defaultProducts];
+
+
+        renderProducts();
+
+
+        if (fetchError) {
+
+            fetchError.textContent =
+                "Showing featured products while the backend is unavailable.";
+
+        }
+
+    }
 
 }
 
@@ -947,15 +699,15 @@ if (searchInput) {
 
     searchInput.addEventListener(
         "input",
-        () => {
+        function () {
 
-            const query =
+            const search =
                 searchInput.value
                     .trim()
                     .toLowerCase();
 
 
-            if (!query) {
+            if (!search) {
 
                 renderProducts();
 
@@ -964,17 +716,15 @@ if (searchInput) {
             }
 
 
-            const filteredProducts =
+            const filtered =
                 products.filter(
                     product => {
 
                         return (
 
-                            String(
-                                product.title || ""
-                            )
-                            .toLowerCase()
-                            .includes(query)
+                            product.title
+                                .toLowerCase()
+                                .includes(search)
 
                             ||
 
@@ -982,7 +732,7 @@ if (searchInput) {
                                 product.category || ""
                             )
                             .toLowerCase()
-                            .includes(query)
+                            .includes(search)
 
                             ||
 
@@ -990,7 +740,7 @@ if (searchInput) {
                                 product.description || ""
                             )
                             .toLowerCase()
-                            .includes(query)
+                            .includes(search)
 
                         );
 
@@ -1003,7 +753,7 @@ if (searchInput) {
 
 
             products =
-                filteredProducts;
+                filtered;
 
 
             renderProducts();
@@ -1011,173 +761,6 @@ if (searchInput) {
 
             products =
                 oldProducts;
-
-        }
-    );
-
-}
-
-
-// ============================================================
-// CREATE LISTING - SELLER DASHBOARD
-// ============================================================
-
-if (listingForm) {
-
-    listingForm.addEventListener(
-        "submit",
-        async (event) => {
-
-            event.preventDefault();
-
-
-            const data =
-                new FormData(listingForm);
-
-
-            const productData = {
-
-                title:
-                    data.get("title"),
-
-                category:
-                    data.get("category"),
-
-                description:
-                    data.get("description"),
-
-                image:
-                    data.get("image"),
-
-                fileUrl:
-                    data.get("image"),
-
-                price:
-                    Number(
-                        data.get("price")
-                    ),
-
-                pricing:
-                    data.get("pricing")
-
-            };
-
-
-            try {
-
-                await createProduct(
-                    productData
-                );
-
-
-                if (formMessage) {
-
-                    formMessage.textContent =
-                        "Product published successfully.";
-
-                }
-
-
-                listingForm.reset();
-
-
-            } catch (error) {
-
-                console.error(error);
-
-
-                if (formMessage) {
-
-                    formMessage.textContent =
-                        "Product creation failed.";
-
-                }
-
-            }
-
-        }
-    );
-
-}
-
-
-// ============================================================
-// FILE UPLOAD DISPLAY
-// ============================================================
-
-if (assetFile && uploadStatus) {
-
-    assetFile.addEventListener(
-        "change",
-        () => {
-
-            const file =
-                assetFile.files[0];
-
-
-            uploadStatus.textContent =
-                file
-                    ? "Selected file : " + file.name
-                    : "No file selected";
-
-        }
-    );
-
-}
-
-
-// ============================================================
-// REVIEW BUTTON
-// ============================================================
-
-if (reviewButton) {
-
-    reviewButton.addEventListener(
-        "click",
-        () => {
-
-            if (!listingForm) {
-
-                return;
-
-            }
-
-
-            const data =
-                new FormData(
-                    listingForm
-                );
-
-
-            if (reviewPanel) {
-
-                reviewPanel.hidden =
-                    false;
-
-            }
-
-
-            if (reviewContent) {
-
-                reviewContent.innerHTML = `
-
-                    <h4>
-                        ${data.get("title") || ""}
-                    </h4>
-
-                    <p>
-                        Category:
-                        ${data.get("category") || ""}
-                    </p>
-
-                    <p>
-                        Price:
-                        ₹${data.get("price") || 0}
-                    </p>
-
-                `;
-
-            }
 
         }
     );
@@ -1198,10 +781,10 @@ if (year) {
 
 
 // ============================================================
-// INITIALIZE APP
+// INITIALIZE
 // ============================================================
 
-const initializeApp = () => {
+function initializeApp() {
 
     updateCartCount();
 
@@ -1209,12 +792,8 @@ const initializeApp = () => {
 
     fetchProducts();
 
-};
+}
 
-
-// ============================================================
-// DOM READY
-// ============================================================
 
 if (
     document.readyState ===
@@ -1231,5 +810,7 @@ if (
     initializeApp();
 
 }
+```
+
 
 
