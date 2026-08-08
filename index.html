@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Digital Product Hub</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="topbar">
+
+        <a href="index.html" class="brand">
+            <i class="fa-solid fa-store"></i>
+            Digital Product Hub
+        </a>
+
+        <nav>
+
+            <a href="index.html">Home</a>
+
+            <a href="#products">Products</a>
+
+            <a href="#categories">Categories</a>
+
+            <a href="#about">About</a>
+
+            <a href="#contact">Contact</a>
+
+        </nav>
+
+        <div class="header-actions">
+
+            <button class="search-btn">
+                <i class="fa fa-search"></i>
+            </button>
+
+            <a href="cart.html" class="cart-link">
+
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <span id="cart-count">0</span>
+
+            </a>
+
+        </div>
+
+    </header>
+
+    <!-- ================= HERO ================= -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <h1>
+                Learn, Design & Grow
+            </h1>
+
+            <p>
+                Buy premium digital products including UI Kits,
+                React Courses, Source Code,
+                E-books, Templates and much more.
+            </p>
+
+            <a href="#products" class="btn">
+                Browse Products
+            </a>
+
+        </div>
+
+    </section>
+
+    <!-- ================= SEARCH ================= -->
+
+    <section class="search-section">
+
+        <input
+            type="text"
+            id="search"
+            placeholder="Search digital products...">
+
+    </section>
+
+    <!-- ================= CATEGORIES ================= -->
+
+    <section id="categories" class="categories">
+
+        <h2>Categories</h2>
+
+        <div class="category-grid">
+
+            <div class="category-card">
+
+                <i class="fa-solid fa-code"></i>
+
+                <h3>Courses</h3>
+
+            </div>
+
+            <div class="category-card">
+
+                <i class="fa-solid fa-palette"></i>
+
+                <h3>UI Kits</h3>
+
+            </div>
+
+            <div class="category-card">
+
+                <i class="fa-solid fa-book"></i>
+
+                <h3>E-books</h3>
+
+            </div>
+
+            <div class="category-card">
+
+                <i class="fa-solid fa-file-code"></i>
+
+                <h3>Source Code</h3>
+
+            </div>
+
+            <div class="category-card">
+
+                <i class="fa-solid fa-pen-ruler"></i>
+
+                <h3>Templates</h3>
+
+            </div>
+
+            <div class="category-card">
+
+                <i class="fa-solid fa-laptop-code"></i>
+
+                <h3>Projects</h3>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ================= PRODUCTS ================= -->
+
+    <section id="products" class="products">
+
+        <h2>All Products</h2>
+
+        <div id="fetch-error" style="color:crimson;margin-bottom:12px"></div>
+
+        <div id="product-grid" class="product-grid">
+
+            <!-- Product Card 1 -->
+
+            <div class="product-card">
+
+                <img src="images/react.png"
+                    alt="React Course">
+
+                <div class="product-details">
+
+                    <span class="tag">
+                        Course
+                    </span>
+
+                    <h3>
+                        React Course
+                    </h3>
+
+                    <p>
+                        Complete React learning material
+                        with projects and notes.
+                    </p>
+
+                    <h4>
+                        ₹499
+                    </h4>
+
+                    <div class="buttons">
+
+                        <button class="buy-btn">
+                            Buy Now
+                        </button>
+
+                        <button class="cart-btn">
+                            Add to Cart
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Product Card 2 -->
+
+            <div class="product-card">
+
+                <img src="images/uikit.png"
+                    alt="UI Kit">
+
+                <div class="product-details">
+
+                    <span class="tag">
+                        UI Kit
+                    </span>
+
+                    <h3>
+                        Premium UI Kit
+                    </h3>
+
+                    <p>
+                        Professional Figma UI Kit
+                        with 300+ components.
+                    </p>
+
+                    <h4>
+                        ₹49
+                    </h4>
+
+                    <div class="buttons">
+
+                        <button class="buy-btn">
+                            Buy Now
+                        </button>
+
+                        <button class="cart-btn">
+                            Add to Cart
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+                        <!-- Product Card 3 -->
+
+            <div class="product-card">
+
+                <img src="images/ebook.png"
+                    alt="E-book">
+
+                <div class="product-details">
+
+                    <span class="tag">
+                        E-book
+                    </span>
+
+                    <h3>
+                        JavaScript Master Guide
+                    </h3>
+
+                    <p>
+                        Learn modern JavaScript from beginner
+                        to advanced with practical examples.
+                    </p>
+
+                    <h4>
+                        ₹199
+                    </h4>
+
+                    <div class="buttons">
+
+                        <button class="buy-btn">
+                            Buy Now
+                        </button>
+
+                        <button class="cart-btn">
+                            Add to Cart
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Product Card 4 -->
+
+            <div class="product-card">
+
+                <img src="images/sourcecode.png"
+                    alt="Source Code">
+
+                <div class="product-details">
+
+                    <span class="tag">
+                        Source Code
+                    </span>
+
+                    <h3>
+                        E-commerce Website
+                    </h3>
+
+                    <p>
+                        Complete responsive shopping website
+                        source code with HTML, CSS & JavaScript.
+                    </p>
+
+                    <h4>
+                        ₹299
+                    </h4>
+
+                    <div class="buttons">
+
+                        <button class="buy-btn">
+                            Buy Now
+                        </button>
+
+                        <button class="cart-btn">
+                            Add to Cart
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ================= ABOUT ================= -->
+
+    <section id="about" class="about">
+
+        <h2>About Us</h2>
+
+        <p>
+            Digital Product Hub is your one-stop destination for
+            premium digital products including online courses,
+            UI kits, templates, e-books, and source code.
+            We help developers, designers, and students learn
+            faster and build better projects.
+        </p>
+
+    </section>
+
+    <!-- ================= CONTACT ================= -->
+
+    <section id="contact" class="contact">
+
+        <h2>Contact Us</h2>
+
+        <p>Email: support@digitalproducthub.com</p>
+
+        <p>Phone: +91 98765 43210</p>
+
+        <p>Location: Bengaluru, Karnataka</p>
+
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <p>
+            © 2026 Digital Product Hub. All Rights Reserved.
+        </p>
+
+    </footer>
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>
