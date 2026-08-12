@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const dns = require("dns");
 const path = require("path");
+const fs = require("fs");
 
 // ============================================================
 // DNS FIX FOR MONGODB ATLAS
@@ -21,7 +22,7 @@ dns.setServers([
 ]);
 
 // ============================================================
-// APP
+// CREATE EXPRESS APP
 // ============================================================
 
 const app = express();
@@ -32,7 +33,7 @@ const app = express();
 
 app.use(cors({
     origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
@@ -43,74 +44,54 @@ app.use(express.urlencoded({ extended: true }));
 // STATIC FILES
 // ============================================================
 
-// Serve uploads folder
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// Serve uploaded files
+app.use(
+    "/uploads",
+    express.static(path.join(__dirname, "uploads"))
+);
 
-// Serve images folder
-app.use("/images", express.static(path.join(__dirname, "images")));
+// Serve product images
+app.use(
+    "/images",
+    express.static(path.join(__dirname, "images"))
+);
 
 // ============================================================
-// HEALTH CHECK
+// TEMPORARY IMAGE DIAGNOSTIC ROUTE
+// ============================================================
+
+app.get("/debug-images", (req, res) => {
+
+    const imageDir = path.join(__dirname, "images");
+
+    if (!fs.existsSync(imageDir)) {
+        return res.json({
+            success: false,
+            exists: false,
+            message: "images folder does NOT exist on Render",
+            imageDir: imageDir
+        });
+    }
+
+    const files = fs.readdirSync(imageDir);
+
+    return res.json({
+        success: true,
+        exists: true,
+        imageDir: imageDir,
+        count: files.length,
+        files: files
+    });
+});
+
+// ============================================================
+// BASIC TEST ROUTE
 // ============================================================
 
 app.get("/", (req, res) => {
     res.json({
         success: true,
-        message: "Digital Product Hub Backend is running 🚀",
-        status: "OK"
-    });
-});
-
-app.get("/api/health", (req, res) => {
-    res.json({
-        success: true,
-        message: "API is working",
-        database:
-            mongoose.connection.readyState === 1
-                ? "Connected"
-                : "Disconnected"
-    });
-});
-
-// ============================================================
-// IMPORT ROUTES
-// ============================================================
-
-const productRoutes = require("./routes/productRoutes");
-const authRoutes = require("./routes/authRoutes");
-const orderRoutes = require("./routes/orderRoutes");
-const paymentRoutes = require("./routes/paymentRoutes");
-
-// ============================================================
-// API ROUTES
-// ============================================================
-
-app.use("/api/v1/products", productRoutes);
-app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/orders", orderRoutes);
-app.use("/api/v1/payment", paymentRoutes);
-
-// ============================================================
-// 404 ROUTE
-// ============================================================
-
-app.use((req, res) => {
-    res.status(404).json({
-        success: false,
-        message: `Route not found: ${req.method} ${req.originalUrl}`
-    });
-});
-
-// ============================================================
-// GLOBAL ERROR HANDLER
-// ============================================================
-
-app.use((err, req, res, next) => {
-    console.error("❌ Server Error:", err);
-
-    res.status(err.status || 500).json({
-        success: false,
-        message: err.message || "Internal Server Error"
+        message: "Digital Product Hub Backend is running"
     });
 });
 
@@ -121,78 +102,116 @@ app.use((err, req, res, next) => {
 const MONGO_URI = process.env.MONGO_URI;
 
 if (!MONGO_URI) {
-    console.error("❌ MONGO_URI is missing in environment variables");
-    process.exit(1);
+    console.error("❌ MONGO_URI is not configured in environment variables.");
+} else {
+
+    mongoose
+        .connect(MONGO_URI)
+        .then(() => {
+            console.log("✅ MongoDB Connected");
+        })
+        .catch((error) => {
+            console.error("❌ MongoDB Connection Error:");
+            console.error(error.message);
+        });
 }
 
-mongoose
-    .connect(MONGO_URI)
-    .then(() => {
-        console.log("✅ MongoDB Connected");
+// ============================================================
+// HEALTH CHECK
+// ============================================================
 
-        // ========================================================
-        // START SERVER ONLY AFTER DATABASE CONNECTION
-        // ========================================================
+app.get("/health", (req, res) => {
+    res.json({
+        success: true,
+        status: "OK",
+        message: "Server is healthy"
+    });
+});
 
-        const PORT = process.env.PORT || 5000;
+// ============================================================
+// API ROUTES
+// ============================================================
 
-        app.listen(PORT, () => {
-            console.log(`🚀 Server running on port ${PORT}`);
+// Products
+try {
+    const productRoutes = require("./routes/productRoutes");
+    app.use("/api/v1/products", productRoutes);
+} catch (error) {
+    console.log("⚠️ Product routes could not be loaded:");
+    console.log(error.message);
+}
 
-            console.log(
-                `🌐 API: http://localhost:${PORT}/api/v1`
-            );
+// Authentication
+try {
+    const authRoutes = require("./routes/authRoutes");
+    app.use("/api/v1/auth", authRoutes);
+} catch (error) {
+    console.log("⚠️ Auth routes could not be loaded:");
+    console.log(error.message);
+}
 
-            console.log(
-                `📦 Products: http://localhost:${PORT}/api/v1/products`
-            );
+// Orders
+try {
+    const orderRoutes = require("./routes/orderRoutes");
+    app.use("/api/v1/orders", orderRoutes);
+} catch (error) {
+    console.log("⚠️ Order routes could not be loaded:");
+    console.log(error.message);
+}
 
-            console.log(
-                `💳 Payment: http://localhost:${PORT}/api/v1/payment`
-            );
+// Payment
+try {
+    const paymentRoutes = require("./routes/paymentRoutes");
+    app.use("/api/v1/payment", paymentRoutes);
+} catch (error) {
+    console.log("⚠️ Payment routes could not be loaded:");
+    console.log(error.message);
+}
 
-            console.log(
-                `📋 Orders: http://localhost:${PORT}/api/v1/orders`
-            );
+// ============================================================
+// 404 HANDLER
+// ============================================================
 
-            console.log(
-                `🔐 Auth: http://localhost:${PORT}/api/v1/auth`
-            );
+app.use((req, res) => {
 
-            console.log(
-                process.env.RAZORPAY_KEY_ID
-                    ? "💳 Razorpay: Configured"
-                    : "⚠️ Razorpay: Not configured"
-            );
-        });
-    })
-    .catch((error) => {
-        console.error("❌ MongoDB Connection Failed:");
-        console.error(error.message);
-
-        process.exit(1);
+    res.status(404).json({
+        success: false,
+        message: "Route not found",
+        path: req.originalUrl
     });
 
-// ============================================================
-// MONGOOSE EVENTS
-// ============================================================
-
-mongoose.connection.on("disconnected", () => {
-    console.log("⚠️ MongoDB disconnected");
-});
-
-mongoose.connection.on("reconnected", () => {
-    console.log("🔄 MongoDB reconnected");
 });
 
 // ============================================================
-// PROCESS ERROR HANDLING
+// GLOBAL ERROR HANDLER
 // ============================================================
 
-process.on("unhandledRejection", (error) => {
-    console.error("❌ Unhandled Promise Rejection:", error);
+app.use((err, req, res, next) => {
+
+    console.error("❌ Server Error:");
+    console.error(err);
+
+    res.status(err.status || 500).json({
+        success: false,
+        message: err.message || "Internal Server Error"
+    });
+
 });
 
-process.on("uncaughtException", (error) => {
-    console.error("❌ Uncaught Exception:", error);
+// ============================================================
+// SERVER START
+// ============================================================
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, "0.0.0.0", () => {
+
+    console.log("==============================================");
+    console.log("🚀 DIGITAL PRODUCT HUB BACKEND");
+    console.log("==============================================");
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📁 Images folder: ${path.join(__dirname, "images")}`);
+    console.log(`🖼️ Image URL: /images/<filename>`);
+    console.log("==============================================");
+
 });
