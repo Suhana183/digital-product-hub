@@ -42,7 +42,6 @@ app.use(express.urlencoded({ extended: true }));
 // STATIC FILES
 // ============================================================
 
-// If you have a public/uploads folder
 app.use("/uploads", express.static("uploads"));
 
 // ============================================================
@@ -117,7 +116,7 @@ app.use((err, req, res, next) => {
 const MONGO_URI = process.env.MONGO_URI;
 
 if (!MONGO_URI) {
-    console.error("❌ MONGO_URI is missing in .env file");
+    console.error("❌ MONGO_URI is missing in environment variables");
     process.exit(1);
 }
 
