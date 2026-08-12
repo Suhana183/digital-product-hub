@@ -8,6 +8,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dns = require("dns");
+const path = require("path");
 
 // ============================================================
 // DNS FIX FOR MONGODB ATLAS
@@ -42,7 +43,11 @@ app.use(express.urlencoded({ extended: true }));
 // STATIC FILES
 // ============================================================
 
-app.use("/uploads", express.static("uploads"));
+// Serve uploads folder
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+// Serve images folder
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 // ============================================================
 // HEALTH CHECK
