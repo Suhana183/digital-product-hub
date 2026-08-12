@@ -1,0 +1,808 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Digital Product Hub</title>
+
+
+    <!-- ================= CSS ================= -->
+
+    <link rel="stylesheet" href="./css/styles.css">
+
+
+    <!-- ================= FONT AWESOME ================= -->
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header class="topbar">
+
+        <a href="index.html" class="brand">
+
+            <i class="fa-solid fa-store"></i>
+
+            Digital Product Hub
+
+        </a>
+
+
+        <nav>
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="#products">
+                Products
+            </a>
+
+            <a href="#categories">
+                Categories
+            </a>
+
+            <a href="#about">
+                About
+            </a>
+
+            <a href="#contact">
+                Contact
+            </a>
+
+        </nav>
+
+
+        <div class="header-actions">
+
+
+            <!-- Search Button -->
+
+            <button
+                class="search-btn"
+                type="button"
+                aria-label="Search">
+
+                <i class="fa fa-search"></i>
+
+            </button>
+
+
+            <!-- Cart -->
+
+            <a
+                href="cart.html"
+                class="cart-link"
+                aria-label="Shopping Cart">
+
+                <i class="fa-solid fa-cart-shopping"></i>
+
+                <span id="cart-count">
+                    0
+                </span>
+
+            </a>
+
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         HERO SECTION
+    ====================================================== -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+
+            <h1>
+                Learn, Design &amp; Grow
+            </h1>
+
+
+            <p>
+
+                Buy premium digital products including
+                UI Kits, React Courses, Source Code,
+                E-books, Templates and much more.
+
+            </p>
+
+
+            <a
+                href="#products"
+                class="btn">
+
+                Browse Products
+
+            </a>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         SEARCH
+    ====================================================== -->
+
+    <section class="search-section">
+
+        <input
+            type="text"
+            id="search"
+            placeholder="Search digital products..."
+            autocomplete="off">
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CATEGORIES
+    ====================================================== -->
+
+    <section
+        id="categories"
+        class="categories">
+
+
+        <h2>
+            Categories
+        </h2>
+
+
+        <div class="category-grid">
+
+
+            <!-- Courses -->
+
+            <div class="category-card">
+
+                <i class="fa-solid fa-code"></i>
+
+                <h3>
+                    Courses
+                </h3>
+
+            </div>
+
+
+            <!-- UI Kits -->
+
+            <div class="category-card">
+
+                <i class="fa-solid fa-palette"></i>
+
+                <h3>
+                    UI Kits
+                </h3>
+
+            </div>
+
+
+            <!-- E-books -->
+
+            <div class="category-card">
+
+                <i class="fa-solid fa-book"></i>
+
+                <h3>
+                    E-books
+                </h3>
+
+            </div>
+
+
+            <!-- Source Code -->
+
+            <div class="category-card">
+
+                <i class="fa-solid fa-file-code"></i>
+
+                <h3>
+                    Source Code
+                </h3>
+
+            </div>
+
+
+            <!-- Templates -->
+
+            <div class="category-card">
+
+                <i class="fa-solid fa-pen-ruler"></i>
+
+                <h3>
+                    Templates
+                </h3>
+
+            </div>
+
+
+            <!-- Projects -->
+
+            <div class="category-card">
+
+                <i class="fa-solid fa-laptop-code"></i>
+
+                <h3>
+                    Projects
+                </h3>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         PRODUCTS
+    ====================================================== -->
+
+    <section
+        id="products"
+        class="products">
+
+
+        <h2>
+            All Products
+        </h2>
+
+
+        <!-- Backend Error Message -->
+
+        <div
+            id="fetch-error"
+            style="color: crimson; margin-bottom: 12px;">
+        </div>
+
+
+
+        <!-- Product Grid -->
+
+        <div
+            id="product-grid"
+            class="product-grid">
+
+
+
+            <!-- =================================================
+                 PRODUCT 1
+            ================================================== -->
+
+            <div class="product-card">
+
+
+                <img
+                    src="./images/react.png"
+                    alt="React Mastery Course"
+                    loading="lazy">
+
+
+                <div class="product-details">
+
+
+                    <span class="tag">
+                        Course
+                    </span>
+
+
+                    <h3>
+                        React Mastery Course
+                    </h3>
+
+
+                    <p>
+                        Complete React learning material
+                        with projects and notes.
+                    </p>
+
+
+                    <h4>
+                        ₹499
+                    </h4>
+
+
+                    <div class="buttons">
+
+
+                        <button
+                            class="buy-btn"
+                            type="button">
+
+                            Buy Now
+
+                        </button>
+
+
+                        <button
+                            class="cart-btn"
+                            type="button">
+
+                            Add to Cart
+
+                        </button>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PRODUCT 2
+            ================================================== -->
+
+            <div class="product-card">
+
+
+                <img
+                    src="./images/uikit.png"
+                    alt="Premium UI Kit"
+                    loading="lazy">
+
+
+                <div class="product-details">
+
+
+                    <span class="tag">
+                        UI Kit
+                    </span>
+
+
+                    <h3>
+                        Premium UI Kit
+                    </h3>
+
+
+                    <p>
+                        Professional Figma UI Kit
+                        with 300+ components.
+                    </p>
+
+
+                    <h4>
+                        ₹49
+                    </h4>
+
+
+                    <div class="buttons">
+
+
+                        <button
+                            class="buy-btn"
+                            type="button">
+
+                            Buy Now
+
+                        </button>
+
+
+                        <button
+                            class="cart-btn"
+                            type="button">
+
+                            Add to Cart
+
+                        </button>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PRODUCT 3
+            ================================================== -->
+
+            <div class="product-card">
+
+
+                <img
+                    src="./images/ebook.png"
+                    alt="JavaScript Master Guide"
+                    loading="lazy">
+
+
+                <div class="product-details">
+
+
+                    <span class="tag">
+                        E-book
+                    </span>
+
+
+                    <h3>
+                        JavaScript Master Guide
+                    </h3>
+
+
+                    <p>
+                        Learn modern JavaScript from beginner
+                        to advanced with practical examples.
+                    </p>
+
+
+                    <h4>
+                        ₹199
+                    </h4>
+
+
+                    <div class="buttons">
+
+
+                        <button
+                            class="buy-btn"
+                            type="button">
+
+                            Buy Now
+
+                        </button>
+
+
+                        <button
+                            class="cart-btn"
+                            type="button">
+
+                            Add to Cart
+
+                        </button>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PRODUCT 4
+            ================================================== -->
+
+            <div class="product-card">
+
+
+                <img
+                    src="./images/sourcecode.png"
+                    alt="E-commerce Website Source Code"
+                    loading="lazy">
+
+
+                <div class="product-details">
+
+
+                    <span class="tag">
+                        Source Code
+                    </span>
+
+
+                    <h3>
+                        E-commerce Website
+                    </h3>
+
+
+                    <p>
+                        Complete responsive shopping website
+                        source code with HTML, CSS &amp; JavaScript.
+                    </p>
+
+
+                    <h4>
+                        ₹299
+                    </h4>
+
+
+                    <div class="buttons">
+
+
+                        <button
+                            class="buy-btn"
+                            type="button">
+
+                            Buy Now
+
+                        </button>
+
+
+                        <button
+                            class="cart-btn"
+                            type="button">
+
+                            Add to Cart
+
+                        </button>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PRODUCT 5
+            ================================================== -->
+
+            <div class="product-card">
+
+
+                <img
+                    src="./images/React%20Native%20Starter%20Pack.png"
+                    alt="React Native Starter Pack"
+                    loading="lazy">
+
+
+                <div class="product-details">
+
+
+                    <span class="tag">
+                        React Native
+                    </span>
+
+
+                    <h3>
+                        React Native Starter Pack
+                    </h3>
+
+
+                    <p>
+                        Complete starter resources for
+                        building React Native mobile applications.
+                    </p>
+
+
+                    <h4>
+                        ₹399
+                    </h4>
+
+
+                    <div class="buttons">
+
+
+                        <button
+                            class="buy-btn"
+                            type="button">
+
+                            Buy Now
+
+                        </button>
+
+
+                        <button
+                            class="cart-btn"
+                            type="button">
+
+                            Add to Cart
+
+                        </button>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- =================================================
+                 PRODUCT 6
+            ================================================== -->
+
+            <div class="product-card">
+
+
+                <img
+                    src="./images/Figma%20Dashboard%20Template.png"
+                    alt="Figma Dashboard Template"
+                    loading="lazy">
+
+
+                <div class="product-details">
+
+
+                    <span class="tag">
+                        Figma Template
+                    </span>
+
+
+                    <h3>
+                        Figma Dashboard Template
+                    </h3>
+
+
+                    <p>
+                        Modern professional dashboard UI
+                        template designed in Figma.
+                    </p>
+
+
+                    <h4>
+                        ₹299
+                    </h4>
+
+
+                    <div class="buttons">
+
+
+                        <button
+                            class="buy-btn"
+                            type="button">
+
+                            Buy Now
+
+                        </button>
+
+
+                        <button
+                            class="cart-btn"
+                            type="button">
+
+                            Add to Cart
+
+                        </button>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         ABOUT
+    ====================================================== -->
+
+    <section
+        id="about"
+        class="about">
+
+
+        <h2>
+            About Us
+        </h2>
+
+
+        <p>
+
+            Digital Product Hub is your one-stop destination
+            for premium digital products including online
+            courses, UI kits, templates, e-books, and source code.
+            We help developers, designers, and students learn
+            faster and build better projects.
+
+        </p>
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         CONTACT
+    ====================================================== -->
+
+    <section
+        id="contact"
+        class="contact">
+
+
+        <h2>
+            Contact Us
+        </h2>
+
+
+        <p>
+
+            Email:
+            support@digitalproducthub.com
+
+        </p>
+
+
+        <p>
+
+            Phone:
+            +91 98765 43210
+
+        </p>
+
+
+        <p>
+
+            Location:
+            Bengaluru, Karnataka
+
+        </p>
+
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer>
+
+
+        <p>
+
+            © 2026 Digital Product Hub.
+            All Rights Reserved.
+
+        </p>
+
+
+    </footer>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script src="./js/app.js"></script>
+
+
+</body>
+
+</html>
+
+
