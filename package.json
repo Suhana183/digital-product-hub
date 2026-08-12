@@ -17,7 +17,8 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^8.24.1",
-    "mongodb-memory-server": "^10.0.1"
+    "mongodb-memory-server": "^10.0.1",
+    "razorpay": "^2.9.8"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
