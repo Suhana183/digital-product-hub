@@ -1,13 +1,55 @@
-require("dotenv").config();
+// ==========================================
+// LOAD ENVIRONMENT VARIABLES
+// ==========================================
+
+const path = require("path");
+
+require("dotenv").config({
+    path: path.join(__dirname, ".env"),
+    override: true
+});
+
+
+// ==========================================
+// CHECK ENVIRONMENT VARIABLES
+// ==========================================
+
+console.log("");
+console.log("==========================================");
+console.log("🔧 Environment Check");
+console.log("==========================================");
+
+console.log(
+    "MONGO_URI loaded:",
+    process.env.MONGO_URI ? "YES" : "NO"
+);
+
+console.log(
+    "JWT_SECRET loaded:",
+    process.env.JWT_SECRET ? "YES" : "NO"
+);
+
+console.log(
+    "RAZORPAY_KEY_ID loaded:",
+    process.env.RAZORPAY_KEY_ID ? "YES" : "NO"
+);
+
+console.log("==========================================");
+console.log("");
+
+
+// ==========================================
+// IMPORT PACKAGES
+// ==========================================
 
 const dns = require("dns");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const { MongoMemoryServer } = require("mongodb-memory-server");
+
 
 // ==========================================
-// DNS Fix for MongoDB Atlas
+// DNS SERVERS FOR MONGODB ATLAS
 // ==========================================
 
 dns.setServers([
@@ -18,14 +60,14 @@ dns.setServers([
 
 
 // ==========================================
-// Express App
+// EXPRESS APP
 // ==========================================
 
 const app = express();
 
 
 // ==========================================
-// Middleware
+// MIDDLEWARE
 // ==========================================
 
 app.use(
@@ -37,13 +79,15 @@ app.use(
 
 app.use(express.json());
 
-app.use(express.urlencoded({
-    extended: true
-}));
+app.use(
+    express.urlencoded({
+        extended: true
+    })
+);
 
 
 // ==========================================
-// Import Routes
+// IMPORT ROUTES
 // ==========================================
 
 const authRoutes =
@@ -63,7 +107,7 @@ const paymentRoutes =
 
 
 // ==========================================
-// Models
+// IMPORT MODELS
 // ==========================================
 
 const Product =
@@ -74,7 +118,7 @@ const User =
 
 
 // ==========================================
-// Home Route
+// HOME ROUTE
 // ==========================================
 
 app.get("/", (req, res) => {
@@ -89,7 +133,7 @@ app.get("/", (req, res) => {
 
 
 // ==========================================
-// Health Check
+// HEALTH CHECK
 // ==========================================
 
 app.get("/health", (req, res) => {
@@ -107,13 +151,14 @@ app.get("/health", (req, res) => {
             process.env.RAZORPAY_KEY_ID
                 ? "Configured"
                 : "Not Configured"
+
     });
 
 });
 
 
 // ==========================================
-// API Routes
+// API ROUTES
 // ==========================================
 
 app.use(
@@ -143,116 +188,172 @@ app.use(
 
 
 // ==========================================
-// MongoDB Connection
+// MONGODB ATLAS CONNECTION
 // ==========================================
 
-const mongoUri =
-    process.env.MONGO_URI ||
-    "mongodb://127.0.0.1:27017/digital_product_platform";
+const mongoUri = process.env.MONGO_URI;
 
+
+// ==========================================
+// CHECK MONGO_URI
+// ==========================================
+
+if (!mongoUri) {
+
+    console.error("");
+    console.error("==========================================");
+    console.error("❌ MONGO_URI IS NOT FOUND");
+    console.error("==========================================");
+    console.error("");
+
+    console.error(
+        "Expected .env location:"
+    );
+
+    console.error(
+        path.join(__dirname, ".env")
+    );
+
+    console.error("");
+
+    console.error(
+        "Your .env file must contain:"
+    );
+
+    console.error("");
+
+    console.error(
+        "MONGO_URI=mongodb+srv://..."
+    );
+
+    console.error("");
+
+    process.exit(1);
+}
+
+
+// ==========================================
+// MONGODB OPTIONS
+// ==========================================
 
 const mongoOptions = {
 
-    serverSelectionTimeoutMS: 10000,
+    serverSelectionTimeoutMS: 15000,
 
     family: 4,
 
     retryWrites: true
+
 };
 
 
 // ==========================================
-// Connect Database
+// CONNECT TO MONGODB ATLAS
 // ==========================================
-
-let memoryServer = null;
-
 
 const connectToDatabase = async () => {
 
     try {
+
+        console.log(
+            "🔄 Connecting to MongoDB Atlas..."
+        );
 
         await mongoose.connect(
             mongoUri,
             mongoOptions
         );
 
-        console.log(
-            "✅ MongoDB Connected"
-        );
+        console.log("");
+        console.log("==========================================");
+        console.log("✅ MongoDB Atlas Connected Successfully");
+        console.log("==========================================");
+        console.log("");
 
-    } catch (err) {
+    } catch (error) {
+
+        console.error("");
+        console.error("==========================================");
+        console.error("❌ MongoDB Atlas Connection Failed");
+        console.error("==========================================");
+        console.error("");
 
         console.error(
-            "❌ MongoDB Connection Error:",
-            err.message
+            "Error:",
+            error.message
         );
 
+        console.error("");
 
+        // IP / Network Access error
         if (
-            /whitelist|IP that isn't/i
-                .test(err.message)
+            /whitelist|IP that isn't|access list|not authorized/i
+                .test(error.message)
         ) {
 
-            console.warn(
-                "⚠️ Add your current IP in MongoDB Atlas → Network Access"
+            console.error(
+                "⚠️ Check MongoDB Atlas → Network Access."
             );
+
         }
 
-
-        console.warn(
-            "⚠️ Falling back to MongoDB Memory Server"
-        );
-
-
-        try {
-
-            memoryServer =
-                await MongoMemoryServer.create();
-
-            const localUri =
-                memoryServer.getUri();
-
-
-            await mongoose.connect(
-                localUri,
-                mongoOptions
-            );
-
-
-            console.log(
-                "✅ Connected to MongoDB Memory Server"
-            );
-
-        } catch (memoryErr) {
+        // Authentication error
+        if (
+            /authentication failed|bad auth|auth/i
+                .test(error.message)
+        ) {
 
             console.error(
-                "❌ MongoDB Memory Server Error:",
-                memoryErr.message
+                "⚠️ Check MongoDB Atlas username and password."
             );
 
-            process.exit(1);
         }
+
+        // DNS / connection error
+        if (
+            /ENOTFOUND|querySrv|ECONNREFUSED|ETIMEOUT/i
+                .test(error.message)
+        ) {
+
+            console.error(
+                "⚠️ Check MongoDB Atlas connection string and DNS/network."
+            );
+
+        }
+
+        console.error("");
+        console.error(
+            "❌ Server will NOT start without MongoDB Atlas."
+        );
+        console.error("");
+
+        process.exit(1);
     }
 };
 
 
 // ==========================================
-// Seed Products
+// SEED PRODUCTS
 // ==========================================
 
 const seedProducts = async () => {
 
     try {
 
-        // Find seller
+        // ==========================================
+        // FIND SELLER
+        // ==========================================
+
         let seller =
             await User.findOne({
                 role: "seller"
             });
 
 
-        // Create seller if needed
+        // ==========================================
+        // CREATE DEFAULT SELLER
+        // ==========================================
+
         if (!seller) {
 
             seller = await User.create({
@@ -268,16 +369,24 @@ const seedProducts = async () => {
 
                 role:
                     "seller"
+
             });
 
             console.log(
                 "👤 Created default seller"
             );
+
+        } else {
+
+            console.log(
+                "👤 Default seller already exists"
+            );
+
         }
 
 
         // ==========================================
-        // Products
+        // PRODUCTS
         // ==========================================
 
         const products = [
@@ -429,7 +538,7 @@ const seedProducts = async () => {
 
 
         // ==========================================
-        // Insert / Update Products
+        // INSERT / UPDATE PRODUCTS
         // ==========================================
 
         for (
@@ -450,15 +559,22 @@ const seedProducts = async () => {
 
                         seller:
                             seller._id
+
                     }
                 },
 
                 {
                     upsert: true
                 }
+
             );
+
         }
 
+
+        // ==========================================
+        // COUNT PRODUCTS
+        // ==========================================
 
         const seededCount =
             await Product.countDocuments();
@@ -475,34 +591,57 @@ const seedProducts = async () => {
             "❌ Product seeding failed:",
             error.message
         );
+
+        throw error;
     }
 };
 
 
 // ==========================================
-// Start Server
+// START SERVER
 // ==========================================
 
 const startServer = async () => {
 
     try {
 
+        // ==========================================
+        // CONNECT TO MONGODB
+        // ==========================================
+
         await connectToDatabase();
+
+
+        // ==========================================
+        // SEED PRODUCTS
+        // ==========================================
 
         await seedProducts();
 
+
+        // ==========================================
+        // PORT
+        // ==========================================
 
         const PORT =
             process.env.PORT || 5000;
 
 
+        // ==========================================
+        // START EXPRESS
+        // ==========================================
+
         app.listen(
             PORT,
             () => {
 
+                console.log("");
+                console.log("==========================================");
                 console.log(
                     `🚀 Server running on port ${PORT}`
                 );
+                console.log("==========================================");
+                console.log("");
 
                 console.log(
                     `💳 Razorpay: ${
@@ -512,15 +651,19 @@ const startServer = async () => {
                     }`
                 );
 
+                console.log("");
+
             }
         );
 
     } catch (error) {
 
+        console.error("");
         console.error(
             "❌ Server startup failed:",
-            error
+            error.message || error
         );
+        console.error("");
 
         process.exit(1);
     }
@@ -528,7 +671,7 @@ const startServer = async () => {
 
 
 // ==========================================
-// Start
+// START APPLICATION
 // ==========================================
 
 startServer();
