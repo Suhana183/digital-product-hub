@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Checkout | Digital Product Hub</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            color: #111;
+        }
+
+        .topbar {
+            width: 100%;
+            padding: 18px 40px;
+            background: #111;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            padding: 10px 18px;
+            border: 1px solid #555;
+            border-radius: 8px;
+        }
+
+        .back-link:hover {
+            background: white;
+            color: #111;
+        }
+
+        .content-section {
+            width: 90%;
+            max-width: 900px;
+            margin: 50px auto;
+        }
+
+        .content-section > h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 36px;
+        }
+
+        .checkout-summary {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .checkout-summary h2 {
+            margin-bottom: 25px;
+            font-size: 25px;
+        }
+
+        #order-items {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .checkout-item {
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            background: #fafafa;
+        }
+
+        .checkout-item h3 {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        .checkout-item p {
+            margin: 6px 0;
+            color: #555;
+        }
+
+        .cart-total {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #ddd;
+        }
+
+        .cart-total h3 {
+            font-size: 25px;
+        }
+
+        #total-price {
+            font-weight: bold;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .buy-btn,
+        .cart-btn {
+            display: inline-block;
+            padding: 14px 25px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .buy-btn {
+            background: #111;
+            color: white;
+        }
+
+        .buy-btn:hover {
+            background: #333;
+        }
+
+        .buy-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .cart-btn {
+            background: #eee;
+            color: #111;
+        }
+
+        .cart-btn:hover {
+            background: #ddd;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .empty-cart h2 {
+            margin-bottom: 20px;
+        }
+
+        .status-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .status-message.show {
+            display: block;
+        }
+
+        .error-message {
+            background: #ffe5e5;
+            color: #b00020;
+        }
+
+        .success-message {
+            background: #e5ffe9;
+            color: #087a1c;
+        }
+
+        @media (max-width: 600px) {
+
+            .topbar {
+                padding: 15px 20px;
+            }
+
+            .brand {
+                font-size: 19px;
+            }
+
+            .content-section {
+                width: 94%;
+                margin: 30px auto;
+            }
+
+            .checkout-summary {
+                padding: 20px;
+            }
+
+            .content-section > h1 {
+                font-size: 28px;
+            }
+
+            .button-container {
+                flex-direction: column;
+            }
+
+            .buy-btn,
+            .cart-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ==========================================
+         HEADER
+    =========================================== -->
+
+    <header class="topbar">
+
+        <a href="index.html" class="brand">
+            Digital Product Hub
+        </a>
+
+        <a href="cart.html" class="back-link">
+            Back to Cart
+        </a>
+
+    </header>
+
+
+    <!-- ==========================================
+         CHECKOUT
+    =========================================== -->
+
+    <main class="content-section">
+
+        <h1>Checkout</h1>
+
+        <section class="checkout-summary">
+
+            <h2>Order Summary</h2>
+
+            <div id="order-items"></div>
+
+            <div class="cart-total">
+
+                <h3>
+                    Total:
+                    ₹<span id="total-price">0.00</span>
+                </h3>
+
+            </div>
+
+            <div
+                id="status-message"
+                class="status-message">
+            </div>
+
+            <div class="button-container">
+
+                <button
+                    id="payBtn"
+                    class="buy-btn"
+                    type="button">
+
+                    Pay Now
+
+                </button>
+
+                <a
+                    href="cart.html"
+                    class="cart-btn">
+
+                    Back to Cart
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ==========================================
+         RAZORPAY CHECKOUT
+    =========================================== -->
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+    <!-- ==========================================
+         CHECKOUT JAVASCRIPT
+    =========================================== -->
+
+    <script>
+
+        // ==========================================
+        // ELEMENTS
+        // ==========================================
+
+        const orderItems =
+            document.getElementById("order-items");
+
+        const totalPrice =
+            document.getElementById("total-price");
+
+        const payButton =
+            document.getElementById("payBtn");
+
+        const statusMessage =
+            document.getElementById("status-message");
+
+
+        // ==========================================
+        // API BASE URL
+        // ==========================================
+
+        const API_BASE =
+            "http://127.0.0.1:5000/api/v1";
+
+
+        // ==========================================
+        // GET CART
+        // ==========================================
+
+        function getCart() {
+
+            try {
+
+                return JSON.parse(
+                    localStorage.getItem("cart")
+                ) || [];
+
+            } catch (error) {
+
+                console.error(
+                    "Cart parsing error:",
+                    error
+                );
+
+                return [];
+            }
+        }
+
+
+        // ==========================================
+        // FORMAT CURRENCY
+        // ==========================================
+
+        function formatCurrency(value) {
+
+            return Number(
+                value || 0
+            ).toFixed(2);
+        }
+
+
+        // ==========================================
+        // GET TOKEN
+        // ==========================================
+
+        function getAuthToken() {
+
+            const token =
+                localStorage.getItem("token");
+
+            console.log(
+                "JWT Token exists:",
+                !!token
+            );
+
+            return token;
+        }
+
+
+        // ==========================================
+        // SHOW STATUS
+        // ==========================================
+
+        function showStatus(
+            message,
+            type = "error"
+        ) {
+
+            statusMessage.textContent =
+                message;
+
+            statusMessage.className =
+                "status-message show " +
+                (
+                    type === "success"
+                        ? "success-message"
+                        : "error-message"
+                );
+        }
+
+
+        // ==========================================
+        // HIDE STATUS
+        // ==========================================
+
+        function hideStatus() {
+
+            statusMessage.textContent = "";
+
+            statusMessage.className =
+                "status-message";
+        }
+
+
+        // ==========================================
+        // CALCULATE TOTAL
+        // ==========================================
+
+        function calculateTotal(cart) {
+
+            return cart.reduce(
+                (total, item) => {
+
+                    const price =
+                        Number(
+                            item.price || 0
+                        );
+
+                    const quantity =
+                        Number(
+                            item.quantity || 1
+                        );
+
+                    return (
+                        total +
+                        price * quantity
+                    );
+
+                },
+                0
+            );
+        }
+
+
+        // ==========================================
+        // RENDER ORDER SUMMARY
+        // ==========================================
+
+        function renderOrderSummary() {
+
+            const cart = getCart();
+
+            hideStatus();
+
+
+            // Empty cart
+            if (cart.length === 0) {
+
+                orderItems.innerHTML = `
+                    <div class="empty-cart">
+
+                        <h2>
+                            Your cart is empty.
+                        </h2>
+
+                        <a
+                            href="index.html"
+                            class="buy-btn">
+
+                            Continue Shopping
+
+                        </a>
+
+                    </div>
+                `;
+
+                totalPrice.textContent =
+                    "0.00";
+
+                payButton.disabled =
+                    true;
+
+                return;
+            }
+
+
+            // Render products
+            orderItems.innerHTML =
+                cart.map(
+                    (item) => {
+
+                        const title =
+                            item.title ||
+                            item.product?.title ||
+                            "Digital Product";
+
+                        const description =
+                            item.description ||
+                            item.product?.description ||
+                            "";
+
+                        const price =
+                            Number(
+                                item.price ||
+                                item.product?.price ||
+                                0
+                            );
+
+                        const quantity =
+                            Number(
+                                item.quantity ||
+                                1
+                            );
+
+                        const subtotal =
+                            price * quantity;
+
+
+                        return `
+                            <div
+                                class="checkout-item">
+
+                                <h3>
+                                    ${title}
+                                </h3>
+
+                                <p>
+                                    ${description}
+                                </p>
+
+                                <p>
+                                    Quantity:
+                                    ${quantity}
+                                </p>
+
+                                <p>
+                                    Price:
+                                    ₹${formatCurrency(price)}
+                                </p>
+
+                                <p>
+                                    Subtotal:
+                                    ₹${formatCurrency(subtotal)}
+                                </p>
+
+                            </div>
+                        `;
+                    }
+                ).join("");
+
+
+            // Total
+            const total =
+                calculateTotal(cart);
+
+
+            totalPrice.textContent =
+                formatCurrency(total);
+
+            payButton.disabled =
+                false;
+        }
+
+
+        // ==========================================
+        // CREATE RAZORPAY ORDER
+        // ==========================================
+
+        async function createPaymentOrder(
+            amount
+        ) {
+
+            const token =
+                getAuthToken();
+
+
+            // No token
+            if (!token) {
+
+                throw new Error(
+                    "Please login before making payment."
+                );
+            }
+
+
+            console.log(
+                "Creating Razorpay order..."
+            );
+
+            console.log(
+                "Amount:",
+                amount
+            );
+
+
+            const response =
+                await fetch(
+                    `${API_BASE}/payment/create-order`,
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json",
+
+                            "Authorization":
+                                `Bearer ${token}`
+                        },
+
+                        body:
+                            JSON.stringify({
+                                amount:
+                                    Number(amount)
+                            })
+                    }
+                );
+
+
+            let data;
+
+            try {
+
+                data =
+                    await response.json();
+
+            } catch (error) {
+
+                throw new Error(
+                    "Invalid response from server."
+                );
+            }
+
+
+            console.log(
+                "Create Order Status:",
+                response.status
+            );
+
+            console.log(
+                "Create Order Response:",
+                data
+            );
+
+
+            // ======================================
+            // JWT EXPIRED
+            // ======================================
+
+            if (
+                response.status === 401
+            ) {
+
+                localStorage.removeItem(
+                    "token"
+                );
+
+                alert(
+                    "Your login session has expired. Please login again."
+                );
+
+                window.location.href =
+                    "login.html";
+
+                return null;
+            }
+
+
+            // ======================================
+            // OTHER SERVER ERROR
+            // ======================================
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    `Server error: ${response.status}`
+                );
+            }
+
+
+            // ======================================
+            // BACKEND FAILURE
+            // ======================================
+
+            if (!data.success) {
+
+                throw new Error(
+                    data.message ||
+                    "Unable to create Razorpay order."
+                );
+            }
+
+
+            // ======================================
+            // CHECK RAZORPAY ORDER
+            // ======================================
+
+            if (!data.order) {
+
+                throw new Error(
+                    "Razorpay order was not returned by the server."
+                );
+            }
+
+
+            if (!data.key) {
+
+                throw new Error(
+                    "Razorpay key was not returned by the server."
+                );
+            }
+
+
+            return data;
+        }
+
+
+        // ==========================================
+        // VERIFY PAYMENT
+        // ==========================================
+
+        async function verifyPayment(
+            paymentData
+        ) {
+
+            const token =
+                getAuthToken();
+
+
+            if (!token) {
+
+                throw new Error(
+                    "Please login again."
+                );
+            }
+
+
+            console.log(
+                "Verifying Razorpay payment..."
+            );
+
+
+            const response =
+                await fetch(
+                    `${API_BASE}/payment/verify`,
+                    {
+
+                        method: "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json",
+
+                            "Authorization":
+                                `Bearer ${token}`
+                        },
+
+                        body:
+                            JSON.stringify(
+                                paymentData
+                            )
+                    }
+                );
+
+
+            let data;
+
+            try {
+
+                data =
+                    await response.json();
+
+            } catch (error) {
+
+                throw new Error(
+                    "Invalid verification response."
+                );
+            }
+
+
+            console.log(
+                "Verify Status:",
+                response.status
+            );
+
+            console.log(
+                "Verify Response:",
+                data
+            );
+
+
+            // JWT expired
+            if (
+                response.status === 401
+            ) {
+
+                localStorage.removeItem(
+                    "token"
+                );
+
+                alert(
+                    "Your login session has expired. Please login again."
+                );
+
+                window.location.href =
+                    "login.html";
+
+                return null;
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.message ||
+                    "Payment verification failed."
+                );
+            }
+
+
+            return data;
+        }
+
+
+        // ==========================================
+        // PAY BUTTON
+        // ==========================================
+
+        payButton.addEventListener(
+            "click",
+            async function () {
+
+                try {
+
+                    hideStatus();
+
+
+                    // ==================================
+                    // GET CART
+                    // ==================================
+
+                    const cart =
+                        getCart();
+
+
+                    if (
+                        cart.length === 0
+                    ) {
+
+                        alert(
+                            "Your cart is empty."
+                        );
+
+                        return;
+                    }
+
+
+                    // ==================================
+                    // CHECK TOKEN
+                    // ==================================
+
+                    const token =
+                        getAuthToken();
+
+
+                    if (!token) {
+
+                        alert(
+                            "Please login before checking out."
+                        );
+
+                        window.location.href =
+                            "login.html";
+
+                        return;
+                    }
+
+
+                    // ==================================
+                    // CHECK RAZORPAY
+                    // ==================================
+
+                    if (
+                        typeof Razorpay ===
+                        "undefined"
+                    ) {
+
+                        alert(
+                            "Razorpay Checkout failed to load."
+                        );
+
+                        console.error(
+                            "Razorpay is undefined."
+                        );
+
+                        return;
+                    }
+
+
+                    // ==================================
+                    // CALCULATE TOTAL
+                    // ==================================
+
+                    const amount =
+                        calculateTotal(cart);
+
+
+                    console.log(
+                        "Total payment amount:",
+                        amount
+                    );
+
+
+                    if (
+                        !Number.isFinite(amount) ||
+                        amount <= 0
+                    ) {
+
+                        alert(
+                            "Invalid payment amount."
+                        );
+
+                        return;
+                    }
+
+
+                    // ==================================
+                    // DISABLE BUTTON
+                    // ==================================
+
+                    payButton.disabled =
+                        true;
+
+                    payButton.textContent =
+                        "Creating payment order...";
+
+
+                    // ==================================
+                    // CREATE ORDER
+                    // ==================================
+
+                    const data =
+                        await createPaymentOrder(
+                            amount
+                        );
+
+
+                    // If token expired
+                    if (!data) {
+
+                        return;
+                    }
+
+
+                    console.log(
+                        "Razorpay Order:",
+                        data.order
+                    );
+
+
+                    // ==================================
+                    // RAZORPAY OPTIONS
+                    // ==================================
+
+                    const options = {
+
+                        key:
+                            data.key,
+
+                        amount:
+                            data.order.amount,
+
+                        currency:
+                            data.order.currency ||
+                            "INR",
+
+                        name:
+                            "Digital Product Hub",
+
+                        description:
+                            "Digital Product Purchase",
+
+                        order_id:
+                            data.order.id,
+
+
+                        // =================================
+                        // PREFILL
+                        // =================================
+
+                        prefill: {
+
+                            name:
+                                localStorage.getItem(
+                                    "userName"
+                                ) || "",
+
+                            email:
+                                localStorage.getItem(
+                                    "userEmail"
+                                ) || ""
+                        },
+
+
+                        // =================================
+                        // THEME
+                        // =================================
+
+                        theme: {
+
+                            color:
+                                "#111111"
+                        },
+
+
+                        // =================================
+                        // PAYMENT SUCCESS
+                        // =================================
+
+                        handler:
+                            async function (
+                                response
+                            ) {
+
+                                try {
+
+                                    console.log(
+                                        "Payment Success:",
+                                        response
+                                    );
+
+
+                                    payButton.textContent =
+                                        "Verifying payment...";
+
+
+                                    const verification =
+                                        await verifyPayment({
+
+                                            razorpay_order_id:
+                                                response.razorpay_order_id,
+
+                                            razorpay_payment_id:
+                                                response.razorpay_payment_id,
+
+                                            razorpay_signature:
+                                                response.razorpay_signature,
+
+                                            products:
+                                                cart,
+
+                                            totalAmount:
+                                                Number(
+                                                    amount
+                                                )
+                                        });
+
+
+                                    if (
+                                        !verification
+                                    ) {
+
+                                        return;
+                                    }
+
+
+                                    if (
+                                        !verification.success
+                                    ) {
+
+                                        throw new Error(
+                                            verification.message ||
+                                            "Payment verification failed."
+                                        );
+                                    }
+
+
+                                    console.log(
+                                        "Payment verified successfully:",
+                                        verification
+                                    );
+
+
+                                    // =================================
+                                    // CLEAR CART
+                                    // =================================
+
+                                    localStorage.removeItem(
+                                        "cart"
+                                    );
+
+
+                                    // =================================
+                                    // SUCCESS
+                                    // =================================
+
+                                    showStatus(
+                                        "Payment successful!",
+                                        "success"
+                                    );
+
+
+                                    alert(
+                                        "Payment successful!"
+                                    );
+
+
+                                    window.location.href =
+                                        "success.html";
+
+                                } catch (
+                                    verificationError
+                                ) {
+
+                                    console.error(
+                                        "Verification Error:",
+                                        verificationError
+                                    );
+
+
+                                    showStatus(
+                                        verificationError.message ||
+                                        "Payment verification failed."
+                                    );
+
+
+                                    alert(
+                                        verificationError.message ||
+                                        "Payment verification failed."
+                                    );
+
+
+                                    payButton.disabled =
+                                        false;
+
+                                    payButton.textContent =
+                                        "Pay Now";
+                                }
+                            },
+
+
+                        // =================================
+                        // MODAL CLOSED
+                        // =================================
+
+                        modal: {
+
+                            ondismiss:
+                                function () {
+
+                                    console.log(
+                                        "Razorpay checkout closed."
+                                    );
+
+
+                                    payButton.disabled =
+                                        false;
+
+                                    payButton.textContent =
+                                        "Pay Now";
+                                }
+                        }
+                    };
+
+
+                    console.log(
+                        "Razorpay Options:",
+                        options
+                    );
+
+
+                    // ==================================
+                    // CREATE RAZORPAY
+                    // ==================================
+
+                    const razorpay =
+                        new Razorpay(
+                            options
+                        );
+
+
+                    // ==================================
+                    // PAYMENT FAILED
+                    // ==================================
+
+                    razorpay.on(
+                        "payment.failed",
+                        function (
+                            response
+                        ) {
+
+                            console.error(
+                                "Payment Failed:",
+                                response
+                            );
+
+
+                            const error =
+                                response.error ||
+                                {};
+
+
+                            alert(
+                                error.description ||
+                                "Payment failed."
+                            );
+
+
+                            showStatus(
+                                error.description ||
+                                "Payment failed."
+                            );
+
+
+                            payButton.disabled =
+                                false;
+
+                            payButton.textContent =
+                                "Pay Now";
+                        }
+                    );
+
+
+                    // ==================================
+                    // OPEN RAZORPAY
+                    // ==================================
+
+                    console.log(
+                        "Opening Razorpay Checkout..."
+                    );
+
+
+                    razorpay.open();
+
+                } catch (error) {
+
+                    console.error(
+                        "Payment Error:",
+                        error
+                    );
+
+
+                    alert(
+                        error.message ||
+                        "Payment failed."
+                    );
+
+
+                    showStatus(
+                        error.message ||
+                        "Payment failed."
+                    );
+
+
+                    payButton.disabled =
+                        false;
+
+                    payButton.textContent =
+                        "Pay Now";
+                }
+            }
+        );
+
+
+        // ==========================================
+        // INITIALIZE
+        // ==========================================
+
+        renderOrderSummary();
+
+    </script>
+
+</body>
+
+</html>

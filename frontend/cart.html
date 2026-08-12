@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Shopping Cart | Digital Product Hub</title>
+
+    <link rel="stylesheet" href="css/styles.css">
+
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="topbar">
+
+        <a href="index.html" class="brand">
+            Digital Product Hub
+        </a>
+
+        <nav>
+
+            <a href="index.html">
+                Home
+            </a>
+
+            <a href="cart.html" class="cart-link">
+                🛒 Cart
+                <span id="cart-count">0</span>
+            </a>
+
+        </nav>
+
+    </header>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="content-section">
+
+        <h1>Your Shopping Cart</h1>
+
+
+        <!-- ================= CART PRODUCTS ================= -->
+
+        <div id="cart-container">
+        </div>
+
+
+        <!-- ================= EMPTY CART ================= -->
+
+        <div
+            id="empty-cart"
+            class="empty-cart"
+            hidden
+        >
+
+            <h2>
+                Your Cart is Empty
+            </h2>
+
+            <p>
+                Add some digital products to continue shopping.
+            </p>
+
+            <a
+                href="index.html"
+                class="buy-btn"
+            >
+                Continue Shopping
+            </a>
+
+        </div>
+
+
+        <!-- ================= CART TOTAL ================= -->
+
+        <div class="cart-total">
+
+            <h2>
+                Total :
+                ₹<span id="total-price">0</span>
+            </h2>
+
+
+            <!-- ================= PAYMENT BUTTON ================= -->
+
+            <button
+                id="checkout-btn"
+                class="buy-btn"
+                type="button"
+            >
+                Proceed To Payment
+            </button>
+
+
+            <br>
+            <br>
+
+
+            <!-- ================= CONTINUE SHOPPING ================= -->
+
+            <a
+                href="index.html"
+                class="cart-btn"
+            >
+                Continue Shopping
+            </a>
+
+        </div>
+
+    </main>
+
+
+    <!-- ================= RAZORPAY ================= -->
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
+    <!-- ================= CART JAVASCRIPT ================= -->
+
+    <script src="js/cart.js"></script>
+
+</body>
+
+</html>

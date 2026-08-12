@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Product Details | Digital Product Hub</title>
+
+    <link rel="stylesheet" href="css/styles.css">
+
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="topbar">
+
+        <a href="index.html" class="brand">
+
+            Digital Product Hub
+
+        </a>
+
+        <nav>
+
+            <a href="index.html">
+
+                Home
+
+            </a>
+
+            <a href="cart.html">
+
+                🛒 Cart
+
+                <span id="cart-count">0</span>
+
+            </a>
+
+        </nav>
+
+    </header>
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="details-page">
+
+        <div class="details-container">
+
+            <!-- Product Image -->
+
+            <div class="details-image">
+
+                <img
+
+                    id="image"
+
+                    class="product-image"
+
+                    src="images/default-product.png"
+
+                    alt="Product Image"
+
+                >
+
+            </div>
+
+            <!-- Product Information -->
+
+            <div class="details-info">
+
+                <span id="category" class="tag">
+
+                    Category
+
+                </span>
+
+                <h1 id="title">
+
+                    Product Title
+
+                </h1>
+
+                <p id="description">
+
+                    Product description goes here.
+
+                </p>
+
+                <div class="product-meta">
+
+                    <p>
+
+                        <strong>Type :</strong>
+
+                        <span id="pricing">
+
+                            Instant Download
+
+                        </span>
+
+                    </p>
+
+                    <h2 id="price">
+
+                        ₹0
+
+                    </h2>
+
+                </div>
+
+                <!-- Buttons -->
+
+                <div class="product-buttons">
+
+                    <button
+
+                        id="cartBtn"
+
+                        class="cart-btn">
+
+                        Add To Cart
+
+                    </button>
+
+                    <button
+
+                        id="buyBtn"
+
+                        class="buy-btn">
+
+                        Buy Now
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+        <script>
+
+// ================= GET PRODUCT =================
+
+const product =
+JSON.parse(
+localStorage.getItem("selectedProduct")
+);
+
+// ================= ELEMENTS =================
+
+const image =
+document.getElementById("image");
+
+const title =
+document.getElementById("title");
+
+const description =
+document.getElementById("description");
+
+const category =
+document.getElementById("category");
+
+const pricing =
+document.getElementById("pricing");
+
+const price =
+document.getElementById("price");
+
+const cartBtn =
+document.getElementById("cartBtn");
+
+const buyBtn =
+document.getElementById("buyBtn");
+
+const cartCount =
+document.getElementById("cart-count");
+
+// ================= IMAGE HELPER =================
+
+function getImage(imageName){
+
+    if(!imageName || imageName.trim()===""){
+
+        return "images/default-product.png";
+
+    }
+
+    if(
+        imageName.startsWith("http://") ||
+        imageName.startsWith("https://")
+    ){
+
+        return imageName;
+
+    }
+
+    if(imageName.startsWith("images/")){
+
+        return imageName;
+
+    }
+
+    return `images/${imageName}`;
+
+}
+
+// ================= UPDATE CART COUNT =================
+
+function updateCartCount(){
+
+    const cart =
+    JSON.parse(localStorage.getItem("cart")) || [];
+
+    let total = 0;
+
+    cart.forEach(item=>{
+
+        total += item.quantity || 1;
+
+    });
+
+    if(cartCount){
+
+        cartCount.innerText = total;
+
+    }
+
+}
+
+updateCartCount();
+
+// ================= LOAD PRODUCT =================
+
+if(product){
+
+    image.src = getImage(product.image);
+
+    image.onerror = function(){
+
+        this.src = "images/default-product.png";
+
+    };
+
+    title.innerText =
+    product.title;
+
+    description.innerText =
+    product.description;
+
+    category.innerText =
+    product.category || "General";
+
+    pricing.innerText =
+    product.pricing === "subscription"
+    ? "Subscription"
+    : "Instant Download";
+
+    price.innerText =
+    "₹" + product.price;
+
+}
+
+else{
+
+    document.body.innerHTML = `
+
+    <h2 style="text-align:center;margin-top:50px;">
+
+        No Product Selected
+
+    </h2>
+
+    <div style="text-align:center;">
+
+        <a href="index.html">
+
+            Go Back
+
+        </a>
+
+    </div>
+
+    `;
+
+}
+// ================= ADD TO CART =================
+
+cartBtn.addEventListener("click", () => {
+
+    let cart =
+    JSON.parse(localStorage.getItem("cart")) || [];
+
+    const existingProduct =
+    cart.find(item => item._id === product._id);
+
+    if(existingProduct){
+
+        existingProduct.quantity =
+        (existingProduct.quantity || 1) + 1;
+
+    }
+
+    else{
+
+        cart.push({
+
+            ...product,
+
+            quantity: 1
+
+        });
+
+    }
+
+    localStorage.setItem(
+
+        "cart",
+
+        JSON.stringify(cart)
+
+    );
+
+    updateCartCount();
+
+    alert("Product added to cart successfully.");
+
+});
+
+// ================= BUY NOW =================
+
+buyBtn.addEventListener("click", () => {
+
+    let cart =
+    JSON.parse(localStorage.getItem("cart")) || [];
+
+    const existingProduct =
+    cart.find(item => item._id === product._id);
+
+    if(existingProduct){
+
+        existingProduct.quantity =
+        (existingProduct.quantity || 1) + 1;
+
+    }
+
+    else{
+
+        cart.push({
+
+            ...product,
+
+            quantity: 1
+
+        });
+
+    }
+
+    localStorage.setItem(
+
+        "cart",
+
+        JSON.stringify(cart)
+
+    );
+
+    updateCartCount();
+
+    window.location.href = "cart.html";
+
+});
+
+</script>
+
+</main>
+
+</body>
+
+</html>
