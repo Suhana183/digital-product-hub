@@ -1,816 +1,194 @@
-```javascript
 // ============================================================
-// DIGITAL PRODUCT HUB - APP.JS
-// ============================================================
-
-const API_BASE = "/api/v1/products";
-
-
-// ============================================================
-// DEFAULT PRODUCTS
+// DIGITAL PRODUCT HUB - BACKEND APP.JS
 // ============================================================
 
-const defaultProducts = [
+require("dotenv").config();
 
-    {
-        _id: "react-course",
-        title: "React Mastery Course",
-        category: "Course",
-        description: "Complete React learning material with projects and notes.",
-        price: 499,
-        image: "images/react.png",
-        pricing: "one-time"
-    },
-
-    {
-        _id: "premium-ui-kit",
-        title: "Premium UI Kit",
-        category: "UI Kit",
-        description: "Professional Figma UI Kit with 300+ components.",
-        price: 49,
-        image: "images/uikit.png",
-        pricing: "one-time"
-    },
-
-    {
-        _id: "javascript-guide",
-        title: "JavaScript Master Guide",
-        category: "E-book",
-        description: "Learn modern JavaScript from beginner to advanced with practical examples.",
-        price: 199,
-        image: "images/ebook.png",
-        pricing: "one-time"
-    },
-
-    {
-        _id: "ecommerce-source-code",
-        title: "E-commerce Website",
-        category: "Source Code",
-        description: "Complete responsive shopping website source code with HTML, CSS and JavaScript.",
-        price: 299,
-        image: "images/sourcecode.png",
-        pricing: "one-time"
-    },
-
-    {
-        _id: "react-native-starter",
-        title: "React Native Starter Pack",
-        category: "React Native",
-        description: "Complete starter resources for building React Native mobile applications.",
-        price: 399,
-        image: "images/React Native Starter Pack.png",
-        pricing: "one-time"
-    },
-
-    {
-        _id: "figma-dashboard",
-        title: "Figma Dashboard Template",
-        category: "Figma Template",
-        description: "Modern professional dashboard UI template designed in Figma.",
-        price: 299,
-        image: "images/Figma Dashboard Template.png",
-        pricing: "one-time"
-    }
-
-];
-
-
-let products = [...defaultProducts];
-
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const dns = require("dns");
 
 // ============================================================
-// DOM ELEMENTS
+// DNS FIX FOR MONGODB ATLAS
 // ============================================================
 
-const productGrid =
-    document.getElementById("product-grid");
-
-const cartCount =
-    document.getElementById("cart-count");
-
-const fetchError =
-    document.getElementById("fetch-error");
-
-const year =
-    document.getElementById("year");
-
+dns.setServers([
+    "8.8.8.8",
+    "8.8.4.4",
+    "1.1.1.1"
+]);
 
 // ============================================================
-// IMAGE FUNCTION
+// APP
 // ============================================================
 
-function getImage(image, title = "") {
+const app = express();
 
-    if (!image) {
+// ============================================================
+// MIDDLEWARE
+// ============================================================
 
-        return "/images/default-product.png";
+app.use(cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
 
-    }
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+// ============================================================
+// STATIC FILES
+// ============================================================
 
-    if (image.startsWith("http")) {
+// If you have a public/uploads folder
+app.use("/uploads", express.static("uploads"));
 
-        return image;
+// ============================================================
+// HEALTH CHECK
+// ============================================================
 
-    }
+app.get("/", (req, res) => {
+    res.json({
+        success: true,
+        message: "Digital Product Hub Backend is running 🚀",
+        status: "OK"
+    });
+});
 
+app.get("/api/health", (req, res) => {
+    res.json({
+        success: true,
+        message: "API is working",
+        database:
+            mongoose.connection.readyState === 1
+                ? "Connected"
+                : "Disconnected"
+    });
+});
 
-    let fileName =
-        image
-            .split("/")
-            .pop()
-            .toLowerCase();
+// ============================================================
+// IMPORT ROUTES
+// ============================================================
 
+const productRoutes = require("./routes/productRoutes");
+const authRoutes = require("./routes/authRoutes");
+const orderRoutes = require("./routes/orderRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 
-    if (fileName === "react.png") {
+// ============================================================
+// API ROUTES
+// ============================================================
 
-        return "/images/react.png";
+app.use("/api/v1/products", productRoutes);
+app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/orders", orderRoutes);
+app.use("/api/v1/payment", paymentRoutes);
 
-    }
+// ============================================================
+// 404 ROUTE
+// ============================================================
 
+app.use((req, res) => {
+    res.status(404).json({
+        success: false,
+        message: `Route not found: ${req.method} ${req.originalUrl}`
+    });
+});
 
-    if (fileName === "uikit.png") {
+// ============================================================
+// GLOBAL ERROR HANDLER
+// ============================================================
 
-        return "/images/uikit.png";
+app.use((err, req, res, next) => {
+    console.error("❌ Server Error:", err);
 
-    }
+    res.status(err.status || 500).json({
+        success: false,
+        message: err.message || "Internal Server Error"
+    });
+});
 
+// ============================================================
+// MONGODB CONNECTION
+// ============================================================
 
-    if (fileName === "ebook.png") {
+const MONGO_URI = process.env.MONGO_URI;
 
-        return "/images/ebook.png";
-
-    }
-
-
-    if (fileName === "sourcecode.png") {
-
-        return "/images/sourcecode.png";
-
-    }
-
-
-    if (
-        fileName.includes("react native") ||
-        title.toLowerCase().includes("react native")
-    ) {
-
-        return "/images/React%20Native%20Starter%20Pack.png";
-
-    }
-
-
-    if (
-        fileName.includes("figma dashboard") ||
-        title.toLowerCase().includes("figma dashboard")
-    ) {
-
-        return "/images/Figma%20Dashboard%20Template.png";
-
-    }
-
-
-    return image.startsWith("/")
-        ? image
-        : "/" + image;
-
+if (!MONGO_URI) {
+    console.error("❌ MONGO_URI is missing in .env file");
+    process.exit(1);
 }
 
+mongoose
+    .connect(MONGO_URI)
+    .then(() => {
+        console.log("✅ MongoDB Connected");
 
-// ============================================================
-// CART
-// ============================================================
+        // ========================================================
+        // START SERVER ONLY AFTER DATABASE CONNECTION
+        // ========================================================
 
-function getCart() {
+        const PORT = process.env.PORT || 5000;
 
-    try {
+        app.listen(PORT, () => {
+            console.log(`🚀 Server running on port ${PORT}`);
 
-        return JSON.parse(
-            localStorage.getItem("cart")
-        ) || [];
+            console.log(
+                `🌐 API: http://localhost:${PORT}/api/v1`
+            );
 
-    } catch (error) {
+            console.log(
+                `📦 Products: http://localhost:${PORT}/api/v1/products`
+            );
 
-        return [];
+            console.log(
+                `💳 Payment: http://localhost:${PORT}/api/v1/payment`
+            );
 
-    }
+            console.log(
+                `📋 Orders: http://localhost:${PORT}/api/v1/orders`
+            );
 
-}
+            console.log(
+                `🔐 Auth: http://localhost:${PORT}/api/v1/auth`
+            );
 
+            console.log(
+                process.env.RAZORPAY_KEY_ID
+                    ? "💳 Razorpay: Configured"
+                    : "⚠️ Razorpay: Not configured"
+            );
+        });
+    })
+    .catch((error) => {
+        console.error("❌ MongoDB Connection Failed:");
+        console.error(error.message);
 
-function saveCart(cart) {
-
-    localStorage.setItem(
-        "cart",
-        JSON.stringify(cart)
-    );
-
-}
-
-
-// ============================================================
-// UPDATE CART COUNT
-// ============================================================
-
-function updateCartCount() {
-
-    const cart =
-        getCart();
-
-
-    if (cartCount) {
-
-        cartCount.textContent =
-            cart.length;
-
-    }
-
-}
-
-
-// ============================================================
-// ADD TO CART
-// ============================================================
-
-function addToCart(product) {
-
-    if (!product) {
-
-        return;
-
-    }
-
-
-    const cart =
-        getCart();
-
-
-    const existing =
-        cart.find(
-            item =>
-                String(item._id) ===
-                String(product._id)
-        );
-
-
-    if (existing) {
-
-        alert(
-            "This product is already in your cart."
-        );
-
-        return;
-
-    }
-
-
-    cart.push({
-
-        _id: product._id,
-
-        title: product.title,
-
-        category: product.category,
-
-        description: product.description,
-
-        price: Number(product.price) || 0,
-
-        image: product.image,
-
-        pricing: product.pricing || "one-time"
-
+        process.exit(1);
     });
 
-
-    saveCart(cart);
-
-    updateCartCount();
-
-
-    alert(
-        `${product.title} added to cart!`
-    );
-
-}
-
-
 // ============================================================
-// BUY NOW
+// MONGOOSE EVENTS
 // ============================================================
 
-function buyNow(product) {
+mongoose.connection.on("disconnected", () => {
+    console.log("⚠️ MongoDB disconnected");
+});
 
-    if (!product) {
-
-        return;
-
-    }
-
-
-    // Save selected product
-
-    localStorage.setItem(
-        "selectedProduct",
-        JSON.stringify(product)
-    );
-
-
-    // Also add it to cart
-
-    const cart =
-        getCart();
-
-
-    const exists =
-        cart.find(
-            item =>
-                String(item._id) ===
-                String(product._id)
-        );
-
-
-    if (!exists) {
-
-        cart.push({
-
-            _id: product._id,
-
-            title: product.title,
-
-            category: product.category,
-
-            description: product.description,
-
-            price: Number(product.price) || 0,
-
-            image: product.image,
-
-            pricing: product.pricing || "one-time"
-
-        });
-
-
-        saveCart(cart);
-
-    }
-
-
-    updateCartCount();
-
-
-    // Go to cart
-
-    window.location.href =
-        "cart.html";
-
-}
-
+mongoose.connection.on("reconnected", () => {
+    console.log("🔄 MongoDB reconnected");
+});
 
 // ============================================================
-// RENDER PRODUCTS
+// PROCESS ERROR HANDLING
 // ============================================================
 
-function renderProducts() {
-
-    if (!productGrid) {
-
-        return;
-
-    }
-
-
-    productGrid.innerHTML =
-        products.map(product => {
-
-            const image =
-                getImage(
-                    product.image,
-                    product.title
-                );
-
-
-            return `
-
-                <article class="product-card">
-
-
-                    <img
-
-                        src="${image}"
-
-                        class="product-image"
-
-                        alt="${product.title}"
-
-                        loading="lazy"
-
-                        onerror="
-                            this.onerror=null;
-                            this.src='/images/default-product.png';
-                        "
-
-                    >
-
-
-                    <div class="product-details">
-
-
-                        <span class="tag">
-
-                            ${product.category || "Digital Product"}
-
-                        </span>
-
-
-                        <h3>
-
-                            ${product.title}
-
-                        </h3>
-
-
-                        <p>
-
-                            ${product.description || ""}
-
-                        </p>
-
-
-                        <div class="product-meta">
-
-                            <span>
-
-                                ${
-                                    product.pricing === "subscription"
-                                        ? "Subscription"
-                                        : "Instant Download"
-                                }
-
-                            </span>
-
-
-                            <strong>
-
-                                ₹${product.price}
-
-                            </strong>
-
-                        </div>
-
-
-                        <div class="buttons">
-
-
-                            <button
-
-                                class="buy-btn"
-
-                                type="button"
-
-                                data-id="${product._id}"
-
-                            >
-
-                                Buy Now
-
-                            </button>
-
-
-                            <button
-
-                                class="cart-btn"
-
-                                type="button"
-
-                                data-id="${product._id}"
-
-                            >
-
-                                Add to Cart
-
-                            </button>
-
-
-                        </div>
-
-
-                    </div>
-
-
-                </article>
-
-            `;
-
-        }).join("");
-
-}
-
-
-// ============================================================
-// BUTTON EVENTS
-// ============================================================
-
-if (productGrid) {
-
-    productGrid.addEventListener(
-        "click",
-        function (event) {
-
-
-            // ==================================================
-            // ADD TO CART
-            // ==================================================
-
-            const cartButton =
-                event.target.closest(
-                    ".cart-btn"
-                );
-
-
-            if (cartButton) {
-
-                const id =
-                    cartButton.dataset.id;
-
-
-                const product =
-                    products.find(
-                        item =>
-                            String(item._id) ===
-                            String(id)
-                    );
-
-
-                if (product) {
-
-                    addToCart(product);
-
-                }
-
-                return;
-
-            }
-
-
-            // ==================================================
-            // BUY NOW
-            // ==================================================
-
-            const buyButton =
-                event.target.closest(
-                    ".buy-btn"
-                );
-
-
-            if (buyButton) {
-
-                const id =
-                    buyButton.dataset.id;
-
-
-                const product =
-                    products.find(
-                        item =>
-                            String(item._id) ===
-                            String(id)
-                    );
-
-
-                if (product) {
-
-                    buyNow(product);
-
-                }
-
-                return;
-
-            }
-
-        }
-    );
-
-}
-
-
-// ============================================================
-// FETCH PRODUCTS FROM BACKEND
-// ============================================================
-
-async function fetchProducts() {
-
-    try {
-
-        const response =
-            await fetch(API_BASE);
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Backend unavailable"
-            );
-
-        }
-
-
-        const data =
-            await response.json();
-
-
-        const backendProducts =
-            Array.isArray(data.products)
-                ? data.products
-                : [];
-
-
-        // Keep default six products
-        // and add backend products.
-
-        const additionalProducts =
-            backendProducts.filter(
-                backendProduct => {
-
-                    return !defaultProducts.some(
-                        defaultProduct =>
-                            defaultProduct.title.toLowerCase() ===
-                            String(
-                                backendProduct.title || ""
-                            ).toLowerCase()
-                    );
-
-                }
-            );
-
-
-        products = [
-
-            ...defaultProducts,
-
-            ...additionalProducts
-
-        ];
-
-
-        renderProducts();
-
-
-        if (fetchError) {
-
-            fetchError.textContent = "";
-
-        }
-
-    } catch (error) {
-
-        console.log(
-            "Backend unavailable. Showing default products."
-        );
-
-
-        products =
-            [...defaultProducts];
-
-
-        renderProducts();
-
-
-        if (fetchError) {
-
-            fetchError.textContent =
-                "Showing featured products while the backend is unavailable.";
-
-        }
-
-    }
-
-}
-
-
-// ============================================================
-// SEARCH
-// ============================================================
-
-const searchInput =
-    document.getElementById("search");
-
-
-if (searchInput) {
-
-    searchInput.addEventListener(
-        "input",
-        function () {
-
-            const search =
-                searchInput.value
-                    .trim()
-                    .toLowerCase();
-
-
-            if (!search) {
-
-                renderProducts();
-
-                return;
-
-            }
-
-
-            const filtered =
-                products.filter(
-                    product => {
-
-                        return (
-
-                            product.title
-                                .toLowerCase()
-                                .includes(search)
-
-                            ||
-
-                            String(
-                                product.category || ""
-                            )
-                            .toLowerCase()
-                            .includes(search)
-
-                            ||
-
-                            String(
-                                product.description || ""
-                            )
-                            .toLowerCase()
-                            .includes(search)
-
-                        );
-
-                    }
-                );
-
-
-            const oldProducts =
-                products;
-
-
-            products =
-                filtered;
-
-
-            renderProducts();
-
-
-            products =
-                oldProducts;
-
-        }
-    );
-
-}
-
-
-// ============================================================
-// YEAR
-// ============================================================
-
-if (year) {
-
-    year.textContent =
-        new Date().getFullYear();
-
-}
-
-
-// ============================================================
-// INITIALIZE
-// ============================================================
-
-function initializeApp() {
-
-    updateCartCount();
-
-    renderProducts();
-
-    fetchProducts();
-
-}
-
-
-if (
-    document.readyState ===
-    "loading"
-) {
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        initializeApp
-    );
-
-} else {
-
-    initializeApp();
-
-}
-```
-
-
-
+process.on("unhandledRejection", (error) => {
+    console.error("❌ Unhandled Promise Rejection:", error);
+});
+
+process.on("uncaughtException", (error) => {
+    console.error("❌ Uncaught Exception:", error);
+});
